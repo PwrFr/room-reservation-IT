@@ -1,5 +1,10 @@
 # room-reservation-IT
 
+## Technology
+- NuxtJS
+- Vite
+- Tailwind
+- Vuetify
 
 ## Color Palette
 ![image](https://user-images.githubusercontent.com/54875724/167244726-1aa8ca6f-33b1-4484-a7fc-0e83aa023c57.png)
