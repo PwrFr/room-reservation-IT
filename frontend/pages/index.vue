@@ -1,11 +1,18 @@
 <template>
- <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+  <div>
+    <h1 class="text-3xl font-bold text-right">หน้าหลัก</h1>
+  </div>
 </template>
 
 <script>
 export default {
   name: "IndexPage",
+  data: () => ({
+    // posts: [],
+  }),
+  async asyncData({ params, $axios }) {
+    const post = await $axios.$get(`https://www.mecallapi.com/api/users`);
+    return { post };
+  },
 };
 </script>

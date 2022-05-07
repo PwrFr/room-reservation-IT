@@ -13,6 +13,11 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      {
+        src: "https://cdn.lordicon.com/xdjxvujz.js",
+      },
     ]
   },
 
@@ -32,8 +37,9 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     '@nuxt/postcss8',
-    'nuxt-vite'
-
+    'nuxt-vite',
+    '@nuxtjs/google-fonts',
+    '@nuxtjs/vuetify',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -49,5 +55,12 @@ export default {
         autoprefixer: {},
       },
     },
+  },
+  googleFonts: {
+    families: {
+      // a simple name
+      Kanit: [300],
+
+    }
   }
 }
