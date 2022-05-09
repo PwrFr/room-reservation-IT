@@ -1,10 +1,10 @@
 
 
 <template>
-  <div class="px-3 py-5" style="background-color: #dcdde0; font-family: kanit">
+  <div class="py-5" style="background-color: #dcdde0; font-family: kanit">
     <v-row no-gutters>
-      <v-col cols="auto">
-        <v-navigation-drawer fixed permanent expand-on-hover>
+      <v-col cols="auto ">
+        <v-navigation-drawer permanent expand-on-hover class="rounded-r-3xl">
           <v-list>
             <v-list-item style="padding-left: 0.5rem">
               <v-list-item-avatar>
@@ -27,69 +27,67 @@
           </v-list>
 
           <v-divider></v-divider>
-
-          <v-list nav style="padding-left: 0rem">
-            <NuxtLink to="/">
-              <v-list-item link>
-                <v-list-item-title class="icon">
+          <v-list>
+            <v-list-item
+              v-for="(item, i) in items"
+              :key="i"
+              :to="item.to"
+              router
+              exact
+              style="padding-left: 0.4rem"
+            >
+              <v-list-item-content>
+                <v-list-item-title>
                   <lord-icon
                     target=".v-list-item"
-                    src="https://cdn.lordicon.com/gmzxduhd.json"
+                    :src="item.src"
                     trigger="morph"
                     style="width: 2.5rem; height: 2.5rem"
                   >
                   </lord-icon>
-                  หน้าหลัก
-                </v-list-item-title>
-              </v-list-item>
-            </NuxtLink>
-            <NuxtLink to="/booking">
-              <v-list-item link>
-                <v-list-item-title
-                  ><lord-icon
-                    target=".v-list-item"
-                    src="https://cdn.lordicon.com/nocovwne.json"
-                    trigger="morph"
-                    state="hover-2"
-                    style="width: 2.5rem; height: 2.5rem"
-                  >
-                  </lord-icon
-                  >จองห้อง</v-list-item-title
+                  {{ item.title }}</v-list-item-title
                 >
-              </v-list-item>
-            </NuxtLink>
-            <v-list-item link>
-              <v-list-item-title
-                ><lord-icon
-                  target=".v-list-item"
-                  src="https://cdn.lordicon.com/puvaffet.json"
-                  trigger="morph"
-                  style="width: 2.5rem; height: 2.5rem"
-                >
-                </lord-icon
-                >ห้องที่จองไว้</v-list-item-title
-              >
-            </v-list-item>
-            <v-list-item link>
-              <v-list-item-title
-                ><lord-icon
-                  target=".v-list-item"
-                  src="https://cdn.lordicon.com/yyecauzv.json"
-                  trigger="morph"
-                  style="width: 2.5rem; height: 2.5rem"
-                >
-                </lord-icon
-                >อนุมัติการจองห้อง</v-list-item-title
-              >
+              </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-navigation-drawer>
       </v-col>
       <v-col>
-        <Nuxt class="bg-white ml-16 p-6 rounded-md" />
+        <Nuxt class="mx-5" />
       </v-col>
     </v-row>
   </div>
 </template>
 
-sc
+<script>
+// import { h } from "vue";
+
+export default {
+  data() {
+    return {
+      items: [
+        {
+          title: "หน้าหลัก",
+          src: "https://cdn.lordicon.com/gmzxduhd.json",
+          to: "/",
+        },
+        {
+          title: "จองห้อง",
+          src: "https://cdn.lordicon.com/nocovwne.json",
+          to: "/booking",
+        },
+        {
+          title: "ห้องที่จองไว้",
+          src: "https://cdn.lordicon.com/puvaffet.json",
+          to: "/booked",
+        },
+        {
+          title: "อนุมัติการจองห้อง",
+          src: "https://cdn.lordicon.com/yyecauzv.json",
+          to: "/permition",
+        },
+      ],
+    };
+  },
+};
+</script>

@@ -1,7 +1,7 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'frontend',
+    title: 'IT.Reservation',
     htmlAttrs: {
       lang: 'en'
     },
@@ -18,7 +18,7 @@ export default {
       {
         src: "https://cdn.lordicon.com/xdjxvujz.js",
       },
-    ]
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css

@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <h1 class="text-3xl font-bold text-right">หน้าหลัก</h1>
+  <div class="bg-white rounded-3xl">
+    <div class="container">
+      <h1 class="text-3xl font-bold text-right">หน้าหลัก</h1>
+    </div>
   </div>
 </template>
 
@@ -16,3 +18,8 @@ export default {
   },
 };
 </script>
+<style>
+body {
+  overflow-y: hidden;
+}
+</style>
