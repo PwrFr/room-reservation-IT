@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node -r @babel/register src/app.js"
+    "start": "nodemon -r @babel/register src/app.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
     "@babel/register": "^7.17.7",
+    "apollo-server": "^3.7.0",
     "apollo-server-core": "^3.7.0",
     "apollo-server-express": "^3.7.0",
     "cors": "^2.8.5",
