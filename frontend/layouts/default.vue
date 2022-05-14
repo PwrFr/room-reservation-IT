@@ -27,7 +27,7 @@
           </v-list>
 
           <v-divider></v-divider>
-          <v-list>
+          <v-list shaped>
             <v-list-item
               v-for="(item, i) in items"
               :key="i"
@@ -53,7 +53,7 @@
         </v-navigation-drawer>
       </v-col>
       <v-col>
-        <Nuxt class="mx-5" />
+        <Nuxt class="mx-5 rounded-3xl" style="font-family: kanit" />
       </v-col>
     </v-row>
   </div>
