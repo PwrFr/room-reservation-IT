@@ -1,11 +1,9 @@
 import { createServer } from 'http'
-
 import { ApolloServerPluginDrainHttpServer, ApolloServerPluginLandingPageGraphQLPlayground, gql } from 'apollo-server-core'
 import { ApolloServer } from 'apollo-server-express'
 import cors from 'cors'
 import express from 'express'
 import './mongoose-connect'
-
 import schema from './graphql'
 
 const app = express()
