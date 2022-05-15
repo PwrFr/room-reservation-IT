@@ -1,5 +1,14 @@
 # room-reservation-IT
 
+## How run Frontend
+
+```
+- cd frontend
+- npm i
+- npm run dev
+```
+
+
 ## Technology
 - NuxtJS
 - Vite
