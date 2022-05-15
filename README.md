@@ -16,10 +16,12 @@ npm start
 
 ## Where to Fix Queries or Mutation 
 1. You need to create Schema In Model Folder (Cody and Paste then defined Schema as you want (Change Variable)),
-You will get <..name..>TC on Bottomline
+You will get ( <..name..>TC ) on Bottomline
+*Mutation*
 2. Add mutation by go to Mutation Folder Create new file (Cody and Paste), Dont forget to change Variable
-3. On Mutation Folder go to Index.js then ( export * from < file that you just create > )
+3. On Mutation Folder go to Index.js then ( export * from '< file that you just create >' )
 
+4. 
 ## Technology
 - NuxtJS
 - Vite
