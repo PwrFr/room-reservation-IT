@@ -12,11 +12,13 @@ export default {
   data: () => ({
     // posts: [],
   }),
-  async asyncData({ params, $axios }) {
-    const post = await $axios.$get(`https://www.mecallapi.com/api/users`);
-    return { post };
-  },
+  // async asyncData({ params, $axios }) {
+  //   const post = await $axios.$get(`https://www.mecallapi.com/api/users`);
+  //   return { post };
+  // },
+  
 };
+
 </script>
 <style>
 </style>
