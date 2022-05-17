@@ -1,0 +1,1 @@
+export const checkPassword = (Ipass, userPass) => Ipass === userPass
