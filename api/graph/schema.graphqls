@@ -5,7 +5,6 @@
 type Todo {
   id: ID!
   text: String!
-  done: Boolean!
   user: User!
 }
 
@@ -26,7 +25,6 @@ input NewTodo {
 }
 
 input NewUser {
-  id: ID!
   name: String!
 }
 
