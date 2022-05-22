@@ -4,18 +4,39 @@ package graph
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
-	"api/graph/generated"
-	"api/graph/model"
 	"context"
 	"fmt"
+	"math/rand"
+
+	"github.com/PwrFr/gqlgen/graph/generated"
+	"github.com/PwrFr/gqlgen/graph/model"
 )
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+	todo := &model.Todo{
+		Text: input.Text,
+		ID:   fmt.Sprintf("T%d", rand.Int()),
+		User: &model.User{ID: input.UserID, Name: "User " + input.UserID},
+	}
+	r.todos = append(r.todos, todo)
+	return todo, nil
+}
+
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+	user := &model.User{
+		ID:   fmt.Sprintf("T%d", rand.Int()),
+		Name: input.Name,
+	}
+	r.users = append(r.users, user)
+	return user, nil
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.todos, nil
+}
+
+func (r *queryResolver) User(ctx context.Context) ([]*model.User, error) {
+	return r.users, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

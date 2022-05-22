@@ -1,4 +1,4 @@
-module api
+module github.com/PwrFr/gqlgen
 
 go 1.17
 

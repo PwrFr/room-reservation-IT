@@ -1,14 +1,14 @@
 package main
 
 import (
-	"api/graph"
-	"api/graph/generated"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/PwrFr/gqlgen/graph"
+	"github.com/PwrFr/gqlgen/graph/generated"
 )
 
 const defaultPort = "3001"
