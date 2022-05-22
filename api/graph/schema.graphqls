@@ -2,10 +2,12 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
+type Room {
   id: ID!
-  text: String!
-  user: User!
+  name: String!
+  status: String!
+  capacity:Int!
+  type:String!
 }
 
 type User {
@@ -14,14 +16,16 @@ type User {
 }
 
 type Query {
-  todos: [Todo!]!
+  rooms: [Room!]!
   user: [User!]!
 
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+input NewRoom {
+  name: String!
+  capacity:Int!
+  type:String!
+
 }
 
 input NewUser {
@@ -29,6 +33,6 @@ input NewUser {
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  createRoom(input: NewRoom!): Room!
   createUser(input: NewUser!): User!
 }

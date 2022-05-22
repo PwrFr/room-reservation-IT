@@ -1,4 +1,5 @@
 package graph
+
 //go:generate go run -mod=mod github.com/99designs/gqlgen generate
 import "github.com/PwrFr/gqlgen/graph/model"
 
@@ -7,6 +8,6 @@ import "github.com/PwrFr/gqlgen/graph/model"
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	todos []*model.Todo
+	rooms []*model.Room
 	users []*model.User
 }

@@ -13,22 +13,25 @@
 // import user from '~/apollo/queries/user.gql'
 import gql from 'graphql-tag';
 
-const ALL_USER = gql`
-query user{
-	user{
+const ALL_ROOMS = gql`
+query rooms{
+  rooms{
     id
     name
+    status
+    capacity
+    type
   }
-
-}`
+}
+`
 export default {
   name: "IndexPage",
    
   data: () => ({
   }),
   apollo: {
-    user: {
-      query: ALL_USER,
+    rooms: {
+      query: ALL_ROOMS,
     },
   },
 };
