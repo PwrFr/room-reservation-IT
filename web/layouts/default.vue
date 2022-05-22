@@ -1,7 +1,7 @@
 
 
 <template>
-  <div class="py-5" style="background-color: #dcdde0; font-family: kanit">
+  <div  style="background-color: #dcdde0; font-family: kanit">
     <v-row no-gutters>
       <v-col cols="auto ">
         <v-navigation-drawer permanent expand-on-hover class="rounded-r-3xl">
@@ -52,8 +52,8 @@
           </v-list>
         </v-navigation-drawer>
       </v-col>
-      <v-col>
-        <Nuxt class="mx-5 rounded-3xl" style="font-family: kanit" />
+      <v-col >
+        <Nuxt class="mx-5 rounded-3xl" style="font-family: kanit;" />
       </v-col>
     </v-row>
   </div>
@@ -91,3 +91,7 @@ export default {
   },
 };
 </script>
+
+<style>
+
+</style>

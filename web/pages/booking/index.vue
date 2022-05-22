@@ -11,4 +11,7 @@ export default {};
 </script>
 
 <style>
+.v-application--wrap {
+    min-height: 94vh
+}
 </style>
