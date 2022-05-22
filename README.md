@@ -7,22 +7,6 @@ npm i
 npm run dev
 ```
 
-## How to run Backend
-```
-cd backend
-npm i
-npm start
-```
-
-## Where to Fix Queries or Mutation 
-1. You need to create Schema In Model Folder (Cody and Paste then defined Schema as you want (Change Variable)),
-You will get ( <..name..>TC ) on Bottomline <br>
-2. Add mutation by go to Mutation Folder Create new file (Cody and Paste), Dont forget to change Variable
-3. On Mutation Folder go to Index.js then ( export * from '< file that you just create >' )
-4. To create Query by go to Queries Folder create new file (Copy and Paste), Dont forget to change Variable
-5. On Queries Folder go to Index.js then ( export * from '< file that you just create >' )
-
-
 ## Technology
 - NuxtJS
 - Vite
