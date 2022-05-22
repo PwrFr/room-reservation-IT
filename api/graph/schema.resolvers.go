@@ -12,14 +12,16 @@ import (
 	"github.com/PwrFr/gqlgen/graph/model"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	todo := &model.Todo{
-		Text: input.Text,
-		ID:   fmt.Sprintf("T%d", rand.Int()),
-		User: &model.User{ID: input.UserID, Name: "User " + input.UserID},
+func (r *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) (*model.Room, error) {
+	room := &model.Room{
+		ID:       fmt.Sprintf("T%d", rand.Int()),
+		Name:     input.Name,
+		Status:   "Avalible",
+		Capacity: input.Capacity,
+		Type:     input.Type,
 	}
-	r.todos = append(r.todos, todo)
-	return todo, nil
+	r.rooms = append(r.rooms, room)
+	return room, nil
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
@@ -31,8 +33,8 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	return user, nil
 }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+func (r *queryResolver) Rooms(ctx context.Context) ([]*model.Room, error) {
+	return r.rooms, nil
 }
 
 func (r *queryResolver) User(ctx context.Context) ([]*model.User, error) {
@@ -47,3 +49,22 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+// func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+// 	todo := &model.Todo{
+// 		Text: input.Text,
+// 		ID:   fmt.Sprintf("T%d", rand.Int()),
+// 		User: &model.User{ID: input.UserID, Name: "User " + input.UserID},
+// 	}
+// 	r.todos = append(r.todos, todo)
+// 	return todo, nil
+// }
+// func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+// 	return r.todos, nil
+// }

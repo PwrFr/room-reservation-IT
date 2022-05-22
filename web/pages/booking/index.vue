@@ -122,6 +122,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .v-card {
   transition: opacity .4s ease-in-out;
@@ -131,5 +132,8 @@ export default {
   opacity: 0.6;
  }
 
+.v-application--wrap {
+    min-height: 94vh
+}
 
 </style>
