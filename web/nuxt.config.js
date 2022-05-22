@@ -52,7 +52,7 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: 'http://localhost:3001/graphql',
+        httpEndpoint: 'http://localhost:3001',
       }
     }
   },
