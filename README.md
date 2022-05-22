@@ -15,7 +15,9 @@ npm run dev
 Model_gen.go and schema.resolver.go will automatic generate 
 4. implement Resolver on schema.resolvers.go
 
-Doc:https://gqlgen.com/
+Doc:
+- https://gqlgen.com/
+- https://github.com/99designs/gqlgen
 ```
 
 ## How to run Backend
