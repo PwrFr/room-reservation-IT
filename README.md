@@ -2,9 +2,24 @@
 
 ## How to run Frontend
 ```
-cd frontend
+cd web
 npm i
 npm run dev
+```
+
+## How to Create Schema
+```
+1. go to schema.graphqls then add your data Type, Query and Mutation
+2. Delete schema.resolvers.go (Only you have new Query or Mutation)
+3. go generate ./graph/
+Model_gen.go and schema.resolver.go will automatic generate 
+4. implement Resolver on schema.resolvers.go
+```
+
+## How to run Backend
+```
+cd api
+go run server.go
 ```
 
 ## Technology
