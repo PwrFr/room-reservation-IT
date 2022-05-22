@@ -5,7 +5,6 @@
       {{$apolloData.loading?"Loading":$apolloData.data}}
 
 
-      <!-- {{item}} -->
     </v-container>
   </v-app>
 </template>
@@ -24,19 +23,14 @@ query user{
 }`
 export default {
   name: "IndexPage",
-   apollo: {
+   
+  data: () => ({
+  }),
+  apollo: {
     user: {
       query: ALL_USER,
-      prefetch: true,
     },
   },
-  data: () => ({
-    // user: []
-  }),
-
-
- 
-  
 };
 
 </script>
