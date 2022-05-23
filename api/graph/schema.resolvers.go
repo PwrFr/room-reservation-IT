@@ -34,7 +34,8 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 }
 
 func (r *queryResolver) Rooms(ctx context.Context) ([]*model.Room, error) {
-	return r.rooms, nil
+	// r.RoomRepo.DB = config.NewDBConn()
+	return r.RoomRepo.GetRoom()
 }
 
 func (r *queryResolver) User(ctx context.Context) ([]*model.User, error) {
