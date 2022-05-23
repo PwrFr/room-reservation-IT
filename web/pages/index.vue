@@ -2,17 +2,15 @@
 <v-row no-gutters>
   <v-col >
   <v-app class="m-4 rounded-3xl">
-  <v-form v-model="valid" class="pt-11">
+  <v-form class="pt-11">
     <v-container>
-      <v-row  >
+      <v-row  justify="center">
         <v-col
           cols="12"
           md="6"
         >
           <v-text-field
-            v-model="firstname"
-            
-            :counter="10"
+            v-model="name"
             label="Room name"
             required
              outlined
@@ -36,8 +34,9 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
-            v-model="dates"
+           
             label="Date"
+            v-model="dateRangeText"
             prepend-icon="mdi-calendar"
             readonly
              outlined
@@ -79,6 +78,7 @@
           <v-text-field
             v-model="capacity"
             label="Capacity"
+
             type="number"
             required
              outlined
@@ -160,6 +160,7 @@ No Rooms
        </div>
   </v-app>
 </v-col>
+
 <v-col cols="auto" class="my-4">
       <v-navigation-drawer 
       class="rounded-l-3xl"
@@ -203,24 +204,146 @@ No Rooms
     </v-chip>
 
     </v-list-item>
- 
+    <v-form v-model="valid" ref="form">
+  <v-textarea
+          label="Purpose"
+          v-model="purpose"
+            :rules="Rules"
 
- 
+          rows="3"
+          row-height="20"
+        ></v-textarea>
+
+ <v-menu
+        ref="menu2"
+        v-model="menu2"
+        :close-on-content-click="false"
+        :return-value.sync="dates2"
+        transition="scale-transition"
+        offset-y
+        :nudge-left="100"
+
+        min-width="auto"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            label="Date"
+            v-model="dateRangeText2"
+            readonly
+            :rules="Rules"
+                   v-bind="attrs"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker
+          v-model="dates2"
+          range
+          no-title
+          scrollable
+        >
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="menu2 = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="$refs.menu2.save(dates2)"
+          >
+            OK
+          </v-btn>
+        </v-date-picker>
+      </v-menu>
+       <v-text-field
+            label="Attendance"
+            v-model="attendance"
+            type="number"
+            :rules="Rules"
+            required
+          ></v-text-field>
+</v-form>
+
     <v-card-actions style="justify-content: space-evenly;">
+
       <v-btn
-          color="pink"
+          text
           @click.stop="mini = !mini,
-          select=  {}"
+          select=  {}
+          dates2= []"
         >
           Cancel
         </v-btn>
          <v-btn
+         text
           color="#2196F3"
-          @click.stop="mini = !mini,
-          select=  {}"
+          @click.stop="check()"
         >
-          Book
+          Reserve
         </v-btn>
+<v-dialog
+      v-model="dialog"
+      max-width="500"
+      persistent
+    >
+    <v-card style="font-family: kanit;">
+        <v-card-title style="font-size: 2rem;">
+          Petition For {{select.name}}
+
+        </v-card-title>
+
+        <v-card-text>
+            <span style="font-size: 1.2rem;"> Purpose</span> 
+          <v-divider class="mb-5"></v-divider>
+        <v-icon
+      large
+    >
+      mdi-file-document
+    </v-icon> {{purpose}}
+        </v-card-text>
+        <v-card-text>
+            <span style="font-size: 1.2rem;"> Attendance</span> 
+          <v-divider class="mb-5"></v-divider>
+          <v-icon
+      large
+    >
+      mdi-account
+    </v-icon>{{attendance}}
+        </v-card-text>
+        <v-card-text>
+            <span style="font-size: 1.2rem;"> Date</span> 
+          <v-divider class="mb-5"></v-divider>
+          <v-icon
+      large
+    >
+      mdi-calendar
+    </v-icon>{{dateRangeText2}}
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-card-text>Reserve By 62070xxx</v-card-text>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialog = false"
+          >
+            Disagree
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="reserve()"
+          >
+            Agree
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     </v-card-actions>
     </div>
     </v-navigation-drawer>
@@ -231,7 +354,6 @@ No Rooms
 <script>
 // import user from '~/apollo/queries/user.gql'
 import gql from 'graphql-tag';
-
 const ALL_ROOMS = gql`
 query rooms{
   rooms{
@@ -245,22 +367,26 @@ query rooms{
 `
 export default {
   name: "IndexPage",
+
    
   data: () => ({
-     dates: [new Date().toISOString()],
-     valid: false,
-      firstname: '',
-      lastname: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => v.length <= 10 || 'Name must be less than 10 characters',
+    dates: [],
+    menu: false,
+    attendance:null,
+    valid: false,
+    name:'',
+    Rules: [
+        v => !!v || 'Plaese Enter',
       ],
-      capacity: '',
-      select:{},
-      menu: false,
+    capacity: '',
+    dialog: false,
+    purpose:'', 
+    select:{},
 
-      
-      mini: true,
+
+    menu2:false,
+    dates2: [],
+    mini: true,
 
 
   }),
@@ -273,11 +399,28 @@ export default {
     selected(room) {
       this.mini = false
       this.select = room
-    }
+    },
+    check(){
+      this.$refs.form.validate()
+      if(this.valid){
+        this.dialog = true
+      }
+    },
+    reserve(){
+      this.dialog = false,
+      this.mini = !this.mini
+      this.purpose = ''
+      this.dates2 = []
+      this.attendance = ''
+    },
+  
   },
    computed: {
       dateRangeText () {
         return this.dates.join(' ~ ')
+      },
+      dateRangeText2 () {
+        return this.dates2.join(' ~ ')
       },
     },
 };
