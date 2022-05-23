@@ -1,6 +1,6 @@
 <template>
-    <v-app>
-        <v-container grid-list-xs>
+    <v-app class="my-4 mx-4 rounded-3xl">
+        <v-container grid-list-xs >
             <h1 class="text-3xl font-bold text-right mb-8">หน้าการจอง</h1>
 
         
@@ -26,8 +26,9 @@
                 </v-btn-toggle>
             </v-col>
 
-            <template v-for="(item, i) in items">
-                <v-col :key="i" cols="12" md="12">
+            <v-row style="height: 75vh; overflow-y: scroll;">
+
+                <v-col  v-for="(item, i) in items" :key="i" cols="12" md="12">
                     <v-hover v-slot="{ hover }">
                         <v-card :elevation="hover ? 12 : 2" :class="{ 'on-hover': hover }">
                             <v-row no-gutters align="center">
@@ -61,7 +62,8 @@
                         </v-card>
                     </v-hover>
                 </v-col>
-            </template>
+            </v-row>
+
 
         </v-container>
     </v-app>
@@ -101,7 +103,27 @@ export default {
                 attendee: "63",
                 status: "Approved..."
 
-            }
+            },
+            {
+                room: "M25",
+                reserveDate: "25/5/2022 10:15:20",
+                attendee: "63",
+                status: "Approved..."
+
+            },
+            {
+                room: "M25",
+                reserveDate: "25/5/2022 10:15:20",
+                attendee: "63",
+                status: "Approved..."
+
+            },{
+                room: "M25",
+                reserveDate: "25/5/2022 10:15:20",
+                attendee: "63",
+                status: "Approved..."
+
+            },
         ],
     }),
 };

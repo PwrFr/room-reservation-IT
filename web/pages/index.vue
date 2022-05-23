@@ -130,11 +130,6 @@ No Rooms
         </v-list-item-title>
         <v-list-item-subtitle>Type : {{room.type}}</v-list-item-subtitle>
         <v-list-item-subtitle>Capacity : {{room.capacity}}</v-list-item-subtitle>
-        <v-list-item-subtitle>
-          
-    </v-list-item-subtitle>
-
-
       </v-list-item-content>
     <v-chip
           label
@@ -168,45 +163,66 @@ No Rooms
 <v-col cols="auto" class="my-4">
       <v-navigation-drawer 
       class="rounded-l-3xl"
-      v-if="!mini"
+      mini-variant-width="0"
       :mini-variant.sync="mini"
       right
       permanent
     >
     <!-- {{select}} -->
- 
+ <div class="p-5">
     <v-list-item three-line style="align-items:flex-start">
       <v-list-item-content>
-              <v-list-item-title class=" mb-1" style="font-size: 1.5rem;">
+        <v-list-item-title  style="font-size: 1.5rem;">
           {{select.name}}
         </v-list-item-title>
-        <v-list-item-subtitle>Type : {{select.type}}</v-list-item-subtitle>
+        <v-list-item-subtitle class=" mt-3">Type : {{select.type}}</v-list-item-subtitle>
         <v-list-item-subtitle>Capacity : {{select.capacity}}</v-list-item-subtitle>
-        <v-list-item-subtitle>
-          
-    </v-list-item-subtitle>
 
-
+        <v-list-item-title class=" mt-3">
+          Facility
+          </v-list-item-title>
+          <v-row no-gutters>
+            <v-col sm="6" v-for="i in  7" :key="i">
+            <v-list-item-subtitle>
+             <li > {{i}} </li>
+             </v-list-item-subtitle>
+             </v-col>
+          </v-row>
+           
+         
+        
       </v-list-item-content>
-    <v-chip
+      <v-chip
           label
+          x-small
           outlined
           class="mt-2"
-          :color="select.status == 'Avalible'?'green':'red'"
+          :color="select.status == 'Avalible'?'#4CAF50':'#F44336'"
     >
       {{select.status}}
     </v-chip>
-     
-    </v-list-item>
 
-    <v-card-actions style="justify-content: end;">
+    </v-list-item>
+ 
+
+ 
+    <v-card-actions style="justify-content: space-evenly;">
       <v-btn
-          dark
-          @click.stop="mini = !mini"
+          color="pink"
+          @click.stop="mini = !mini,
+          select=  {}"
         >
           Cancel
         </v-btn>
+         <v-btn
+          color="#2196F3"
+          @click.stop="mini = !mini,
+          select=  {}"
+        >
+          Book
+        </v-btn>
     </v-card-actions>
+    </div>
     </v-navigation-drawer>
     </v-col>
   </v-row>
@@ -240,7 +256,7 @@ export default {
         v => v.length <= 10 || 'Name must be less than 10 characters',
       ],
       capacity: '',
-      select:null,
+      select:{},
       menu: false,
 
       
