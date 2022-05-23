@@ -1,5 +1,7 @@
 <template>
-  <v-app class="my-4 ">
+<v-row no-gutters>
+  <v-col >
+  <v-app class="m-4 rounded-3xl">
   <v-form v-model="valid" class="pt-11">
     <v-container>
       <v-row  >
@@ -27,7 +29,7 @@
         ref="menu"
         v-model="menu"
         :close-on-content-click="false"
-        :return-value.sync="date"
+        :return-value.sync="dates"
         transition="scale-transition"
         offset-y
         min-width="auto"
@@ -96,7 +98,7 @@
   </v-form>
     <div class="rounded-3xl ">
     <v-container class="p-10 " grid-list-xs style="height: 74.1vh; overflow-y: scroll;">
-      <!-- {{$apolloData.loading?"Loading":$apolloData.data}} -->
+    
 <v-row v-if="$apolloData.loading">
 
   <v-col cols="4"  v-for="i in 6" :key="i">
@@ -107,46 +109,107 @@
     ></v-skeleton-loader>
      </v-col>
 </v-row>
-<v-row v-else-if="!$apolloData.loading">
+
+<v-row v-else-if="$apolloData.data.rooms == ''">
+No Rooms
+</v-row>
+
+
+<v-row v-else>
   <v-col cols="4"  v-for="(room,i) in $apolloData.data.rooms" :key="i">
+  <v-hover v-slot="{ hover }">
   <v-card 
+  :elevation="hover ? 2 : 0"
     class=" p-3 rounded-lg"
     outlined
   >
-    <v-list-item three-line>
+    <v-list-item three-line style="align-items:flex-start">
       <v-list-item-content>
               <v-list-item-title class=" mb-1" style="font-size: 1.5rem;">
           {{room.name}}
         </v-list-item-title>
         <v-list-item-subtitle>Type : {{room.type}}</v-list-item-subtitle>
         <v-list-item-subtitle>Capacity : {{room.capacity}}</v-list-item-subtitle>
-        <v-list-item-subtitle>Status : {{room.status}}</v-list-item-subtitle>
+        <v-list-item-subtitle>
+          
+    </v-list-item-subtitle>
 
 
       </v-list-item-content>
-
-      <v-list-item-avatar
-        tile
-        size="80"
-        color="grey"
-      ></v-list-item-avatar>
+    <v-chip
+          label
+          outlined
+          class="mt-2"
+          :color="room.status == 'Avalible'?'green':'red'"
+    >
+      {{room.status}}
+    </v-chip>
+     
     </v-list-item>
 
     <v-card-actions style="justify-content: end;">
       <v-btn
-        outlined
-        text
-        color="primary"
-      >
-        Book
-      </v-btn>
+          color="pink"
+          dark
+          @click.stop="selected(room)"
+        >
+          Book
+        </v-btn>
     </v-card-actions>
   </v-card>
+  </v-hover>
 </v-col>
 </v-row>
+
     </v-container>
        </div>
   </v-app>
+</v-col>
+<v-col cols="auto" class="my-4">
+      <v-navigation-drawer 
+      class="rounded-l-3xl"
+      v-if="!mini"
+      :mini-variant.sync="mini"
+      right
+      permanent
+    >
+    <!-- {{select}} -->
+ 
+    <v-list-item three-line style="align-items:flex-start">
+      <v-list-item-content>
+              <v-list-item-title class=" mb-1" style="font-size: 1.5rem;">
+          {{select.name}}
+        </v-list-item-title>
+        <v-list-item-subtitle>Type : {{select.type}}</v-list-item-subtitle>
+        <v-list-item-subtitle>Capacity : {{select.capacity}}</v-list-item-subtitle>
+        <v-list-item-subtitle>
+          
+    </v-list-item-subtitle>
+
+
+      </v-list-item-content>
+    <v-chip
+          label
+          outlined
+          class="mt-2"
+          :color="select.status == 'Avalible'?'green':'red'"
+    >
+      {{select.status}}
+    </v-chip>
+     
+    </v-list-item>
+
+    <v-card-actions style="justify-content: end;">
+      <v-btn
+          dark
+          @click.stop="mini = !mini"
+        >
+          Cancel
+        </v-btn>
+    </v-card-actions>
+    </v-navigation-drawer>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -168,7 +231,7 @@ export default {
   name: "IndexPage",
    
   data: () => ({
-     dates: ['2019-09-10', '2019-09-20'],
+     dates: [new Date().toISOString()],
      valid: false,
       firstname: '',
       lastname: '',
@@ -177,8 +240,11 @@ export default {
         v => v.length <= 10 || 'Name must be less than 10 characters',
       ],
       capacity: '',
-      
+      select:null,
       menu: false,
+
+      
+      mini: true,
 
 
   }),
@@ -186,6 +252,12 @@ export default {
     rooms: {
       query: ALL_ROOMS,
     },
+  },
+  methods: {
+    selected(room) {
+      this.mini = false
+      this.select = room
+    }
   },
    computed: {
       dateRangeText () {
