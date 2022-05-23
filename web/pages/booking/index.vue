@@ -31,7 +31,7 @@
                         <v-card :elevation="hover ? 12 : 2" :class="{ 'on-hover': hover }">
                             <v-row no-gutters align="center">
                                 <v-col cols="12" sm="4" md="4" class="py-6 font-bold text-3xl text-center">
-                                    <span>
+                                    <span :style="{color: '#D0754A'}">
                                         {{ item.room }}
                                     </span>
                                 </v-col>
