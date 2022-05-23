@@ -36,11 +36,12 @@
 
 
 
- <template v-for="(item, i) in items">
+ <v-row >
         <v-col
-          :key="i"
+          v-for="(item, i) in items"
           cols="12"
           md="4"
+          :key="i"
         >
           <v-hover v-slot="{ hover }">
             <v-card
@@ -75,7 +76,7 @@
             </v-card>
           </v-hover>
         </v-col>
-      </template>
+      </v-row>
 
 
 
