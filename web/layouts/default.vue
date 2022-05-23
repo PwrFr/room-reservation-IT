@@ -71,15 +71,11 @@ export default {
           src: "https://cdn.lordicon.com/gmzxduhd.json",
           to: "/",
         },
-        {
-          title: "จองห้อง",
-          src: "https://cdn.lordicon.com/nocovwne.json",
-          to: "/booking",
-        },
+        
         {
           title: "ห้องที่จองไว้",
           src: "https://cdn.lordicon.com/puvaffet.json",
-          to: "/booked",
+          to: "/booking",
         },
         {
           title: "อนุมัติการจองห้อง",

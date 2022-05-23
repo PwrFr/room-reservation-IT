@@ -12,14 +12,6 @@ type NewUser struct {
 	Name string `json:"name"`
 }
 
-type Room struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Status   string `json:"status"`
-	Capacity int    `json:"capacity"`
-	Type     string `json:"type"`
-}
-
 type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
