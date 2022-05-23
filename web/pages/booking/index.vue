@@ -6,7 +6,7 @@
         
             <v-col cols="12" class="py-2">
                 
-                <v-btn-toggle v-model="text" color="deep-purple accent-3" group>
+                <v-btn-toggle v-model="text" color="deep-purple accent-3">
                     <v-btn value="all">
                         <span class="hidden-sm-and-down">All</span>
                     </v-btn>
@@ -62,82 +62,6 @@
                     </v-hover>
                 </v-col>
             </template>
-
-            <v-card elevation="5" outlined>
-                <v-row no-gutters align="center" justify="center">
-                    <v-col cols="12" sm="6" md="4" class="py-6 font-bold text-3xl text-center">
-                        <span>
-                            M 22
-                        </span>
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="3" class="py-6">
-                        <span class="font-bold">
-                            Reserve Date
-                        </span><br>
-                        23 / 5 /2022 10 : 52 :12
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="3" class="py-6">
-                        <span class="font-bold">
-                            Attendee
-                        </span><br>
-                        60
-                    </v-col>
-
-                    <v-col cols="12" sm="6" md="2" class="py-6">
-                        <span class="font-bold">
-                            Status
-                        </span><br>
-                        Pending...
-                    </v-col>
-                </v-row>
-            </v-card>
-
-
-
-
- <v-row >
-        <v-col
-          v-for="(item, i) in items"
-          cols="12"
-          md="4"
-          :key="i"
-        >
-          <v-hover v-slot="{ hover }">
-            <v-card
-              :elevation="hover ? 12 : 2"
-              :class="{ 'on-hover': hover }"
-              
-            >
-              <v-img
-                :src="item.img"
-                height="225px"
-              >
-                <v-card-title class="text-h6 white--text">
-                  <v-row
-                    class="fill-height flex-column"
-                    justify="space-between"
-                  >
-                    <p class="mt-4 subheading text-left">
-                      {{ item.title }}
-                    </p>
-
-                    <div>
-                      <p class="ma-0 text-body-1 font-weight-bold font-italic text-left">
-                        {{ item.text }}
-                      </p>
-                      <p class="text-caption font-weight-medium font-italic text-left">
-                        {{ item.subtext }}
-                      </p>
-                    </div>
-                  </v-row>
-                </v-card-title>
-              </v-img>
-            </v-card>
-          </v-hover>
-        </v-col>
-      </v-row>
 
         </v-container>
     </v-app>
