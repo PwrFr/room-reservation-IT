@@ -80,7 +80,7 @@ export default {
         {
           title: "อนุมัติการจองห้อง",
           src: "https://cdn.lordicon.com/yyecauzv.json",
-          to: "/permition",
+          to: "/approved",
         },
       ],
     };
