@@ -2,7 +2,7 @@
   <div style="margin: 100px">
     <div v-if="$auth.loggedIn">
       {{ $auth.user }}
-      <v-btn @click="$auth.logout()">Logout</v-btn>
+      <v-btn @click="logout">Logout</v-btn>
     </div>
     <div v-else>
       <v-btn @click="login">Login</v-btn>
@@ -16,6 +16,7 @@ export default {
     login() {
       this.$auth.loginWith("google");
     },
+    
   },
 };
 </script>
