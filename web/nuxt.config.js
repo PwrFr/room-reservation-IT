@@ -33,7 +33,7 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     "@nuxt/postcss8",
-    "nuxt-vite",
+    // "nuxt-vite",
     "@nuxtjs/google-fonts",
     "@nuxtjs/vuetify",
   ],
