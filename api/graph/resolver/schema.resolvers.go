@@ -1,4 +1,4 @@
-package graph
+package resolver
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -12,30 +12,13 @@ import (
 	"github.com/PwrFr/gqlgen/graph/model"
 )
 
-func (r *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) (*model.Room, error) {
-	room := &model.Room{
-		ID:       fmt.Sprintf("T%d", rand.Int()),
-		Name:     input.Name,
-		Status:   "Avalible",
-		Capacity: input.Capacity,
-		Type:     input.Type,
-	}
-	r.rooms = append(r.rooms, room)
-	return room, nil
-}
-
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+func (m *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	user := &model.User{
 		ID:   fmt.Sprintf("T%d", rand.Int()),
 		Name: input.Name,
 	}
-	r.users = append(r.users, user)
+	m.users = append(m.users, user)
 	return user, nil
-}
-
-func (r *queryResolver) Rooms(ctx context.Context) ([]*model.Room, error) {
-	// r.RoomRepo.DB = config.NewDBConn()
-	return r.RoomRepo.GetRoom()
 }
 
 func (r *queryResolver) User(ctx context.Context) ([]*model.User, error) {

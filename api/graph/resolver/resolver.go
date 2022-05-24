@@ -1,4 +1,4 @@
-package graph
+package resolver
 
 //go:generate go run -mod=mod github.com/99designs/gqlgen generate
 import (
@@ -11,7 +11,7 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	RoomRepo repo.RoomRepo
-	rooms    []*model.Room
-	users    []*model.User
+	RepoDB repo.RepoDB
+	rooms  []*model.Room
+	users  []*model.User
 }

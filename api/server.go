@@ -15,10 +15,6 @@ func main() {
 
 	router.Use(config.CorsConfig())
 
-	// c := graph{graph.Resolver: &graph.Resolver{
-	// 	RoomRepo: repo.RoomRepo{DB: config.CallDB()},
-	// }}
-
 	router.Handle("/", playground.Handler("GraphQL Playground", "/query"))
 	router.Handle("/query", config.ServerConfig())
 
