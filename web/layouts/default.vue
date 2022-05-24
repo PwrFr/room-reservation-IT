@@ -88,7 +88,7 @@
             </v-list-item>
             <v-list-item
               v-else
-              to="/login"
+              @click="login"
               router
               exact
               style="padding-left: 0.4rem"
@@ -121,6 +121,9 @@
 
 export default {
   methods: {
+    login() {
+      this.$auth.loginWith("google");
+    },
     logout() {
       this.$auth.logout();
       location.reload();
