@@ -53,7 +53,7 @@
         </v-navigation-drawer>
       </v-col>
       <v-col >
-        <Nuxt class="mx-5 rounded-3xl" style="font-family: kanit;" />
+        <Nuxt class="mx-5 " style="font-family: kanit;" />
       </v-col>
     </v-row>
   </div>
