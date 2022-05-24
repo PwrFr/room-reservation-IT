@@ -5,8 +5,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/PwrFr/gqlgen/graph"
 	"github.com/PwrFr/gqlgen/graph/generated"
+	"github.com/PwrFr/gqlgen/graph/resolver"
+
 	repo "github.com/PwrFr/gqlgen/repository"
 	"github.com/gorilla/websocket"
 )
@@ -15,8 +16,8 @@ func ServerConfig() *handler.Server {
 	srv := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
 			generated.Config{
-				Resolvers: &graph.Resolver{
-					RoomRepo: repo.RoomRepo{DB: db},
+				Resolvers: &resolver.Resolver{
+					RepoDB: repo.RepoDB{DB: db},
 				}}))
 
 	srv.AddTransport(&transport.Websocket{

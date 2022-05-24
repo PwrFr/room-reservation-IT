@@ -6,8 +6,8 @@ type Room {
   id: ID!
   name: String!
   status: String!
-  capacity:Int!
-  type:String!
+  capacity: Int!
+  type: String!
 }
 
 type User {

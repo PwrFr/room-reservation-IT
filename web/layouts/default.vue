@@ -1,7 +1,5 @@
-
-
 <template>
-  <div  style="background-color: #dcdde0; font-family: kanit">
+  <div style="background-color: #dcdde0; font-family: kanit">
     <v-row no-gutters>
       <v-col cols="auto ">
         <v-navigation-drawer permanent expand-on-hover class="rounded-r-3xl">
@@ -52,8 +50,8 @@
           </v-list>
         </v-navigation-drawer>
       </v-col>
-      <v-col >
-        <Nuxt class="mx-5 " style="font-family: kanit;" />
+      <v-col>
+        <Nuxt class="mx-5" style="font-family: kanit" />
       </v-col>
     </v-row>
   </div>
@@ -71,7 +69,7 @@ export default {
           src: "https://cdn.lordicon.com/gmzxduhd.json",
           to: "/",
         },
-        
+
         {
           title: "ห้องที่จองไว้",
           src: "https://cdn.lordicon.com/puvaffet.json",
@@ -82,12 +80,15 @@ export default {
           src: "https://cdn.lordicon.com/yyecauzv.json",
           to: "/approved",
         },
+        {
+          title: "Login",
+          src: "https://cdn.lordicon.com/gkditgni.json",
+          to: "/login",
+        },
       ],
     };
   },
 };
 </script>
 
-<style>
-
-</style>
+<style></style>
