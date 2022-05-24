@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 -- Table structure for table `account`
 --
 
-CREATE TABLE `account` (
-  `account_id` int(10) NOT NULL,
-  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `first_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` enum('student','staff') COLLATE utf8mb4_unicode_ci NOT NULL
+CREATE TABLE account (
+  account_id int NOT NULL,
+  username VARCHAR (255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  password varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  first_name varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  last_name varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  type enum('student','staff') COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -33,10 +33,10 @@ CREATE TABLE `account` (
 -- Table structure for table `facility`
 --
 
-CREATE TABLE `facility` (
-  `facility_id` int(10) NOT NULL,
-  `facility_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE facility (
+  facility_id int NOT NULL,
+  facility_name varchar(255)  NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -44,9 +44,9 @@ CREATE TABLE `facility` (
 -- Table structure for table `program`
 --
 
-CREATE TABLE `program` (
-  `program_id` int(10) NOT NULL,
-  `program_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+CREATE TABLE program (
+  program_id int(10) NOT NULL,
+  program_name varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
