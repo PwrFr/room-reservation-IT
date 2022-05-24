@@ -1,6 +1,6 @@
 <template>
   <v-app class="my-4 mx-4 rounded-3xl">
-    <v-container grid-list-xs>
+    <v-container>
       <v-col cols="12" class="py-10">
         <v-btn-toggle v-model="text" mandatory group>
           <v-btn value="all">
@@ -39,11 +39,10 @@
                   <span class="font-bold"> Attendee : </span>
                   {{ item.attendee }}<br />
 
-                  <span class="font-bold"> Status : </span><br />
+                  <span class="font-bold"> Status : </span>
                   <v-chip
                     label
                     outlined
-                    class="mt-2"
                     :color="
                       item.status == 'Approved'
                         ? '#4CAF50'
@@ -116,16 +115,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.v-card {
-  transition: opacity 0.2s ease-in-out;
-}
-
-.v-card:not(.on-hover) {
-  opacity: 0.7;
-}
-
-.v-application--wrap {
-  min-height: 94vh;
-}
-</style>
+<style scoped></style>

@@ -134,7 +134,8 @@
 
                     <v-card-actions style="justify-content: end">
                       <v-btn color="pink" dark @click.stop="selected(room)">
-                        Book
+                        Reserve
+                        <v-icon right>mdi-calendar-multiple-check</v-icon>
                       </v-btn>
                     </v-card-actions>
                   </v-card>
