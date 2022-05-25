@@ -77,6 +77,7 @@
             </v-row>
           </v-container>
         </v-form>
+
         <div class="rounded-3xl">
           <v-container
             class="p-10"
@@ -93,7 +94,7 @@
               </v-col>
             </v-row>
 
-            <v-row v-else-if="$apolloData.data.rooms == ''"> No Rooms </v-row>
+            <v-row v-else-if="$apolloData.data.rooms == null"> No Rooms </v-row>
 
             <v-row v-else>
               <v-col

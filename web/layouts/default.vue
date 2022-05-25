@@ -14,7 +14,7 @@
             <v-list-item link>
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ $auth.user.name }}
+                  {{ user }}
                 </v-list-item-title>
 
                 <v-list-item-subtitle>{{
@@ -150,6 +150,13 @@ export default {
         },
       ],
     };
+  },
+  computed: {
+    user() {
+      // alert("go some where");
+
+      return this.$auth.user.name;
+    },
   },
 };
 </script>

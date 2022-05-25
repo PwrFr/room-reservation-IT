@@ -23,68 +23,27 @@
 
       <v-row style="height: 70vh; overflow-y: scroll">
         <v-col v-for="(item, i) in items" :key="i" md="4" class="mb-5">
-          <v-hover v-slot="{ hover }">
-            <v-card class="rounded-lg" :elevation="hover ? 4 : 0" outlined>
-              <v-row no-gutters align="center">
-                <v-col md="4" class="py-6 font-bold text-3xl text-center">
-                  <span style="color: #e91e63">
-                    {{ item.room }}
-                  </span>
-                </v-col>
-
-                <v-col md="8" class="py-6">
-                  <span class="font-bold"> Reserve Date : </span>
-                  {{ item.reserveDate }}<br />
-
-                  <span class="font-bold"> Attendee : </span>
-                  {{ item.attendee }}<br />
-
-                  <span class="font-bold"> Status : </span>
-                  <v-chip
-                    label
-                    outlined
-                    class=""
-                    :color="
-                      item.status == 'Approved'
-                        ? '#4CAF50'
-                        : item.status == 'Pending'
-                        ? '#FFC107'
-                        : '#F44336'
-                    "
-                  >
-                    {{ item.status }} </v-chip
-                  ><br />
-                </v-col>
-                <v-row justify="space-around">
-                  <v-btn
-                    color="error"
-                    dark
-                    rounded
-                    @click="confirmation(item, 'Reject')"
-                  >
-                    Reject <v-icon right dark> mdi-close </v-icon></v-btn
-                  >
-                  <v-btn
-                    color="success"
-                    rounded
-                    dark
-                    @click="confirmation(item, 'Approve')"
-                  >
-                    Approve
-                    <v-icon right dark> mdi-check </v-icon></v-btn
-                  >
-                </v-row>
-              </v-row>
-            </v-card>
-          </v-hover>
+          <StatusCardVue :item="item" :readMore="readMore" />
         </v-col>
       </v-row>
     </v-container>
+
+    <v-card-actions style="justify-content: space-evenly">
+      <v-dialog v-model="dialog" max-width="500">
+        <PetitionCard :confirmation="confirmation" :room="select" />
+      </v-dialog>
+    </v-card-actions>
   </v-app>
 </template>
 
 <script>
+import PetitionCard from "../../components/PetitionCard.vue";
+import StatusCardVue from "../../components/StatusCard.vue";
 export default {
+  components: {
+    PetitionCard,
+    StatusCardVue,
+  },
   data: () => ({
     text: "all",
     items: [
@@ -131,10 +90,20 @@ export default {
         status: "Pending",
       },
     ],
+    select: {},
+    mini: true,
+    dialog: false,
   }),
   methods: {
-    confirmation(room, msg) {
-      confirm(`Do you want to ${msg} using Room : ${room.room}`)
+    confirmation(msg) {
+      if (confirm(`Do you want to ${msg} using Room : blabla`)) {
+        this.dialog = !this.dialog;
+      } else {
+      }
+    },
+    readMore(item) {
+      this.dialog = true;
+      this.select = item;
     },
   },
 };
