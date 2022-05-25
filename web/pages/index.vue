@@ -19,7 +19,9 @@
               </v-col>
             </v-row>
 
-            <v-row v-else-if="$apolloData.data.rooms == null"> No Rooms </v-row>
+            <v-row v-else-if="$apolloData.data.rooms === undefined">
+              No Rooms
+            </v-row>
 
             <v-row v-else>
               <v-col
@@ -67,11 +69,17 @@ import SearchBarVue from "../components/SearchBar.vue";
 const ALL_ROOMS = gql`
   query rooms {
     rooms {
-      id
-      name
-      status
-      capacity
-      type
+      room_name
+      room_status
+      room_capacity
+      room_type {
+        type_name
+      }
+      room_facility {
+        facility {
+          facility_name
+        }
+      }
     }
   }
 `;
@@ -136,7 +144,7 @@ export default {
   computed: {
     detail() {
       return {
-        room: this.select.name,
+        room: this.select.room_name,
         purpose: this.purpose,
         attendee: this.attendance,
         reserveDate: this.dateRangeText2,

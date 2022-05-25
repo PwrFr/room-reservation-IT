@@ -1,22 +1,22 @@
 <template>
-  <div class="p-5">
+  <div class="p-1">
     <v-list-item three-line style="align-items: flex-start">
       <v-list-item-content>
-        <v-list-item-title style="font-size: 1.5rem">
-          {{ select.name }}
-        </v-list-item-title>
-        <v-list-item-subtitle class="mt-3"
-          >Type : {{ select.type }}</v-list-item-subtitle
-        >
+        <v-list-item-subtitle style="font-size: 1.4rem; color: black">
+          {{ select.room_name }}
+        </v-list-item-subtitle>
+        <v-list-item-subtitle v-if="select.room_type" class="mt-3">
+          Type : {{ select.room_type.type_name }}
+        </v-list-item-subtitle>
         <v-list-item-subtitle
-          >Capacity : {{ select.capacity }}</v-list-item-subtitle
+          >Capacity : {{ select.room_capacity }}</v-list-item-subtitle
         >
 
         <v-list-item-title class="mt-3"> Facility </v-list-item-title>
         <v-row no-gutters>
-          <v-col sm="6" v-for="i in 7" :key="i">
+          <v-col sm="12" v-for="(facility, i) in select.room_facility" :key="i">
             <v-list-item-subtitle>
-              <li>{{ i }}</li>
+              <li>{{ facility.facility.facility_name }}</li>
             </v-list-item-subtitle>
           </v-col>
         </v-row>
@@ -26,13 +26,13 @@
         x-small
         outlined
         class="mt-2"
-        :color="select.status == 'Avalible' ? '#4CAF50' : '#F44336'"
+        :color="select.room_status == 'Available' ? '#4CAF50' : '#F44336'"
       >
-        {{ select.status }}
+        {{ select.room_status }}
       </v-chip>
     </v-list-item>
 
-    <v-form v-model="valid" ref="form">
+    <v-form class="mx-5" v-model="valid" ref="form">
       <v-textarea
         label="Purpose"
         v-model="purpose"

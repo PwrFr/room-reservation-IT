@@ -4,20 +4,22 @@
       <v-list-item three-line style="align-items: flex-start">
         <v-list-item-content>
           <v-list-item-title class="mb-1" style="font-size: 1.5rem">
-            {{ room.name }}
+            {{ room.room_name }}
           </v-list-item-title>
-          <v-list-item-subtitle>Type : {{ room.type }}</v-list-item-subtitle>
           <v-list-item-subtitle
-            >Capacity : {{ room.capacity }}</v-list-item-subtitle
+            >Type : {{ room.room_type.type_name }}</v-list-item-subtitle
+          >
+          <v-list-item-subtitle
+            >Capacity : {{ room.room_capacity }}</v-list-item-subtitle
           >
         </v-list-item-content>
         <v-chip
           label
           outlined
           class="mt-2"
-          :color="room.status == 'Avalible' ? 'green' : 'red'"
+          :color="room.room_status == 'Available' ? 'green' : 'red'"
         >
-          {{ room.status }}
+          {{ room.room_status }}
         </v-chip>
       </v-list-item>
 
