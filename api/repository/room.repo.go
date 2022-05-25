@@ -22,7 +22,7 @@ func (r *RepoDB) GetRoom() ([]*model.Room, error) {
 		Relation("RoomFacility").
 		Relation("RoomFacility.Facility").
 		// WherePK().
-		Where("room_id = 1").
+		// Where("room_id = 1").
 		Select()
 	if err != nil {
 		fmt.Println("Err, ", err)

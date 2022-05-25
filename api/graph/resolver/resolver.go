@@ -2,7 +2,6 @@ package resolver
 
 //go:generate go run -mod=mod github.com/99designs/gqlgen generate
 import (
-	"github.com/PwrFr/gqlgen/graph/model"
 	repo "github.com/PwrFr/gqlgen/repository"
 )
 
@@ -11,7 +10,7 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	RepoDB  repo.RepoDB
-	rooms   []*model.Room
-	account []*model.Account
+	RepoDB repo.RepoDB
+	// rooms   []*model.Room
+	// account []*model.Account
 }
