@@ -11,7 +11,7 @@ type RepoDB struct {
 	DB *pg.DB
 }
 
-func (r *RepoDB) GeAccount() ([]*model.Account, error) {
+func (r *RepoDB) GetAccount() ([]*model.Account, error) {
 	var account []*model.Account
 	err := r.DB.Model(&account).Select()
 	fmt.Println(err)
@@ -19,6 +19,18 @@ func (r *RepoDB) GeAccount() ([]*model.Account, error) {
 		return nil, err
 	}
 	return account, nil
+}
+
+func (r *RepoDB) GetAccountById(input string) (*model.Account, error) {
+	var account model.Account
+	err := r.DB.Model(&account).Where("account_id = ?", input).Select()
+
+	if err != nil {
+		fmt.Println("errkub")
+		return nil, err
+	}
+
+	return &account, nil
 }
 
 func (r *RepoDB) InsertAccount(account *model.Account) (*model.Account, error) {

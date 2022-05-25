@@ -1,6 +1,7 @@
 # GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
+scalar Time
 
 type Room {
   room_id: ID!
@@ -10,6 +11,21 @@ type Room {
   type_id: Int!
   room_type: RoomType!
   room_facility: [RoomFacility!]!
+}
+
+type Request {
+  request_id: Int!
+  room_id: Int!
+  request_purpose: String!
+  request_attendee: Int!
+  request_status: String!
+  start_datetime: Time!
+  end_datetime: Time!
+  request_by: String!
+  request_datetime: Time!
+  approve_by: String!
+  approve_datetime: Time!
+  remark: String!
 }
 
 type RoomType {
@@ -41,6 +57,8 @@ type Account {
 type Query {
   rooms: [Room!]!
   account: [Account!]!
+  accountById(account_id: String!): Account!
+  request: [Request!]!
 
 }
 
@@ -58,9 +76,17 @@ input NewRoom {
 
 }
 
-
+input NewRequest {
+  room_id: Int!
+  request_purpose: String!
+  request_attendee: Int!
+  start_datetime: Time!
+  end_datetime: Time!
+  request_by: String!
+}
 
 type Mutation {
   createRoom(input: NewRoom!): Room!
   createAccount(input: NewAccount!): Account!
+  createRequest(input: NewRequest!): Request!
 }
