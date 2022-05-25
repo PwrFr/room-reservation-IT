@@ -4,26 +4,8 @@ package resolver
 // will be copied through when generating and any unknown code will be moved to the end.
 
 import (
-	"context"
-	"fmt"
-	"math/rand"
-
 	"github.com/PwrFr/gqlgen/graph/generated"
-	"github.com/PwrFr/gqlgen/graph/model"
 )
-
-func (m *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	user := &model.User{
-		ID:   fmt.Sprintf("T%d", rand.Int()),
-		Name: input.Name,
-	}
-	m.users = append(m.users, user)
-	return user, nil
-}
-
-func (r *queryResolver) User(ctx context.Context) ([]*model.User, error) {
-	return r.users, nil
-}
 
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }

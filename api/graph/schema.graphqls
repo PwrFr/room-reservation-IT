@@ -3,36 +3,64 @@
 # https://gqlgen.com/getting-started/
 
 type Room {
-  id: ID!
-  name: String!
-  status: String!
-  capacity: Int!
-  type: String!
+  room_id: ID!
+  room_name: String!
+  room_status: String!
+  room_capacity: Int!
+  type_id: Int!
+  room_type: RoomType!
+  room_facility: [RoomFacility!]!
 }
 
-type User {
-  id: ID!
-  name: String!
+type RoomType {
+  type_id: Int!
+	type_name: String!
+}
+
+type RoomFacility {
+  facility_id: Int!
+	room_id: Int!
+	quantity: Int!
+	facility: Facility!
+}
+
+type Facility {
+  facility_id: Int!
+	facility_name: String!
+}
+
+
+type Account {
+  account_id: String!
+	first_name: String!
+	last_name: String!
+	role: String! 
+	email: String!
 }
 
 type Query {
   rooms: [Room!]!
-  user: [User!]!
+  account: [Account!]!
 
+}
+
+input NewAccount {
+  account_id: String!
+	first_name: String!
+	last_name: String!
+	email: String!
 }
 
 input NewRoom {
-  name: String!
-  capacity:Int!
-  type:String!
+  room_name: String!
+  room_capacity: Int!
+  type_id: Int!
 
 }
 
-input NewUser {
-  name: String!
-}
+
 
 type Mutation {
   createRoom(input: NewRoom!): Room!
-  createUser(input: NewUser!): User!
+  createAccount(input: NewAccount!): Account!
 }
