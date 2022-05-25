@@ -23,40 +23,7 @@
 
       <v-row style="height: 70vh; overflow-y: scroll">
         <v-col v-for="(item, i) in items" :key="i" md="4">
-          <v-hover v-slot="{ hover }">
-            <v-card class="rounded-lg" :elevation="hover ? 4 : 0" outlined>
-              <v-row no-gutters align="center">
-                <v-col md="4" class="py-6 font-bold text-3xl text-center">
-                  <span style="color: #e91e63">
-                    {{ item.room }}
-                  </span>
-                </v-col>
-
-                <v-col md="8" class="py-6">
-                  <span class="font-bold"> Reserve Date : </span>
-                  {{ item.reserveDate }}<br />
-
-                  <span class="font-bold"> Attendee : </span>
-                  {{ item.attendee }}<br />
-
-                  <span class="font-bold"> Status : </span>
-                  <v-chip
-                    label
-                    outlined
-                    :color="
-                      item.status == 'Approved'
-                        ? '#4CAF50'
-                        : item.status == 'Pending'
-                        ? '#FFC107'
-                        : '#F44336'
-                    "
-                  >
-                    {{ item.status }}
-                  </v-chip>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-hover>
+          <StatusCardVue :item="item" :readMore="readMore" />
         </v-col>
       </v-row>
     </v-container>
@@ -64,7 +31,12 @@
 </template>
 
 <script>
+import StatusCardVue from "../../components/StatusCard.vue";
+
 export default {
+  components: {
+    StatusCardVue,
+  },
   data: () => ({
     text: "all",
     items: [

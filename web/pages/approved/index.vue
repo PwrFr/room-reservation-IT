@@ -23,7 +23,7 @@
 
       <v-row style="height: 70vh; overflow-y: scroll">
         <v-col v-for="(item, i) in items" :key="i" md="4" class="mb-5">
-          <StatusCardVue :item="item" :readMore="readMore" />
+          <StatusCardVue :item="item" :readMore="readMore" :staff="true" />
         </v-col>
       </v-row>
     </v-container>

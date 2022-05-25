@@ -3,9 +3,7 @@
     <v-card class="rounded-lg" :elevation="hover ? 4 : 0" outlined>
       <v-row no-gutters align="center">
         <v-col md="4" class="py-6 font-bold text-3xl text-center">
-          <span style="color: #e91e63">
-            {{ item.room }}
-          </span>
+          <span style="color: #e91e63"> {{ item.room }} </span>
         </v-col>
 
         <v-col md="8" class="py-6">
@@ -31,7 +29,7 @@
             {{ item.status }} </v-chip
           ><br />
         </v-col>
-        <v-row justify="space-around">
+        <v-row v-if="staff" justify="space-around">
           <v-btn color="warning" dark rounded @click="readMore(item)">
             More
           </v-btn>
@@ -43,7 +41,7 @@
 
 <script>
 export default {
-  props: ["item", "readMore"],
+  props: ["item", "readMore", "staff"],
 };
 </script>
 
