@@ -7,7 +7,7 @@
     <v-card-text>
       <span style="font-size: 1.2rem"> Purpose</span>
       <v-divider class="mb-5"></v-divider>
-      <v-icon large> mdi-file-document </v-icon> asdas
+      <v-icon large> mdi-file-document </v-icon> {{ room.purpose }}
     </v-card-text>
     <v-card-text>
       <span style="font-size: 1.2rem"> Attendance</span>
@@ -20,24 +20,41 @@
       <v-icon large> mdi-calendar </v-icon>{{ room.reserveDate }}
     </v-card-text>
 
-    <v-card-actions>
+    <v-card-actions v-if="staff">
       <v-spacer></v-spacer>
-
       <v-card-text>Reserve By 62070xxx</v-card-text>
-      <v-btn color="error" dark rounded @click="confirmation('Reject')">
+      <v-btn
+        color="error"
+        dark
+        rounded
+        @click="confirmation(room.room, 'Reject')"
+      >
         Reject <v-icon right dark> mdi-close </v-icon></v-btn
       >
-      <v-btn color="success" rounded dark @click="confirmation('Approve')">
+      <v-btn
+        color="success"
+        rounded
+        dark
+        @click="confirmation(room.room, 'Approve')"
+      >
         Approve
         <v-icon right dark> mdi-check </v-icon></v-btn
       >
+    </v-card-actions>
+
+    <v-card-actions v-else>
+      <v-spacer></v-spacer>
+      <v-card-text>Reserve By 62070xxx</v-card-text>
+      <v-btn color="green darken-1" text @click="cancel()"> Disagree </v-btn>
+
+      <v-btn color="green darken-1" text @click="reserve()"> Agree </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 export default {
-  props: ["confirmation", "room"],
+  props: ["confirmation", "room", "staff", "cancel", "reserve"],
 };
 </script>
 

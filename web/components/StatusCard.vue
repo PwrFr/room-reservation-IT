@@ -2,18 +2,18 @@
   <v-hover v-slot="{ hover }">
     <v-card class="rounded-lg" :elevation="hover ? 4 : 0" outlined>
       <v-row no-gutters align="center">
-        <v-col md="4" class="py-6 font-bold text-3xl text-center">
+        <v-col md="4" class="py-6 text-3xl text-center">
           <span style="color: #e91e63"> {{ item.room }} </span>
         </v-col>
 
         <v-col md="8" class="py-6">
-          <span class="font-bold"> Reserve Date : </span>
+          <span> Reserve Date : </span>
           {{ item.reserveDate }}<br />
 
-          <span class="font-bold"> Attendee : </span>
+          <span> Attendee : </span>
           {{ item.attendee }}<br />
 
-          <span class="font-bold"> Status : </span>
+          <span> Status : </span>
           <v-chip
             label
             outlined
@@ -30,7 +30,13 @@
           ><br />
         </v-col>
         <v-row v-if="staff" justify="space-around">
-          <v-btn color="warning" dark rounded @click="readMore(item)">
+          <v-btn
+            color="warning"
+            class="px-10"
+            dark
+            rounded
+            @click="readMore(item)"
+          >
             More
           </v-btn>
         </v-row>

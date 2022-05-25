@@ -30,7 +30,11 @@
 
     <v-card-actions style="justify-content: space-evenly">
       <v-dialog v-model="dialog" max-width="500">
-        <PetitionCard :confirmation="confirmation" :room="select" />
+        <PetitionCard
+          :confirmation="confirmation"
+          :room="select"
+          :staff="true"
+        />
       </v-dialog>
     </v-card-actions>
   </v-app>
@@ -52,42 +56,49 @@ export default {
         reserveDate: "22/5/2022",
         attendee: "60",
         status: "Pending",
+        purpose: "Want to study",
       },
       {
         room: "M23",
         reserveDate: "23/5/2022",
         attendee: "61",
         status: "Pending",
+        purpose: "Want to study",
       },
       {
         room: "M24",
         reserveDate: "24/5/2022",
         attendee: "62",
         status: "Pending",
+        purpose: "Want to study",
       },
       {
         room: "M25",
         reserveDate: "25/5/2022",
         attendee: "63",
         status: "Pending",
+        purpose: "Want to study",
       },
       {
         room: "M25",
         reserveDate: "25/5/2022",
         attendee: "63",
         status: "Pending",
+        purpose: "Want to study",
       },
       {
         room: "M25",
         reserveDate: "25/5/2022",
         attendee: "63",
         status: "Pending",
+        purpose: "Want to study",
       },
       {
         room: "M25",
         reserveDate: "25/5/2022",
         attendee: "63",
         status: "Pending",
+        purpose: "Want to study",
       },
     ],
     select: {},
@@ -95,8 +106,8 @@ export default {
     dialog: false,
   }),
   methods: {
-    confirmation(msg) {
-      if (confirm(`Do you want to ${msg} using Room : blabla`)) {
+    confirmation(room, msg) {
+      if (confirm(`Do you want to ${msg} using Room : ${room}`)) {
         this.dialog = !this.dialog;
       } else {
       }

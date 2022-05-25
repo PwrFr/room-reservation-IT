@@ -23,7 +23,7 @@
 
       <v-row style="height: 70vh; overflow-y: scroll">
         <v-col v-for="(item, i) in items" :key="i" md="4">
-          <StatusCardVue :item="item" :readMore="readMore" />
+          <StatusCardVue :item="item" />
         </v-col>
       </v-row>
     </v-container>
@@ -87,4 +87,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style>
+.v-application--wrap {
+  min-height: 95vh;
+}
+</style>
