@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/PwrFr/gqlgen/graph/model"
@@ -29,13 +28,16 @@ func (r *RepoDB) GetRoom() ([]*model.Room, error) {
 		return nil, err
 	}
 
-	x, _ := json.Marshal(room)
-	fmt.Println(string(x))
+	// x, _ := json.Marshal(room)
+	// fmt.Println(string(x))
 	return room, nil
 }
 
 func (r *RepoDB) InsertRoom(room *model.Room) (*model.Room, error) {
 	_, err := r.DB.Model(room).Returning("*").Insert()
+	if err != nil {
+		return nil, err
+	}
 
 	return room, err
 }

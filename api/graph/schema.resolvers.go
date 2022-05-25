@@ -19,11 +19,23 @@ func (r *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *mutationResolver) CreateRequest(ctx context.Context, input model.NewRequest) (*model.Request, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *queryResolver) Rooms(ctx context.Context) ([]*model.Room, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) Account(ctx context.Context) ([]*model.Account, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) AccountByID(ctx context.Context, accountID string) (*model.Account, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Request(ctx context.Context) ([]*model.Request, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
