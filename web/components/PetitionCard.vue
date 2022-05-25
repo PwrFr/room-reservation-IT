@@ -22,7 +22,9 @@
 
     <v-card-actions v-if="staff">
       <v-spacer></v-spacer>
-      <v-card-text>Reserve By {{ $auth.user.email }}</v-card-text>
+      <v-card-text v-if="$auth.loggedIn"
+        >Reserve By {{ $auth.user.email }}</v-card-text
+      >
       <v-btn
         color="error"
         dark
@@ -44,7 +46,9 @@
 
     <v-card-actions v-else>
       <v-spacer></v-spacer>
-      <v-card-text>Reserve By {{ $auth.user.email }}</v-card-text>
+      <v-card-text v-if="$auth.loggedIn"
+        >Reserve By {{ $auth.user.email }}</v-card-text
+      >
       <v-btn color="green darken-1" text @click="cancel()"> Disagree </v-btn>
 
       <v-btn color="green darken-1" text @click="reserve()"> Agree </v-btn>

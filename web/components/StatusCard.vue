@@ -29,12 +29,12 @@
             {{ item.status }} </v-chip
           ><br />
         </v-col>
-        <v-row v-if="staff" justify="space-around">
+        <v-row v-if="staff" justify="center">
           <v-btn
             color="warning"
             class="px-10"
-            dark
             rounded
+            dark
             @click="readMore(item)"
           >
             More

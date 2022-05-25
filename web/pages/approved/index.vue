@@ -1,42 +1,51 @@
 <template>
   <v-app class="my-4 mx-4 rounded-3xl">
-    <v-container>
-      <v-col cols="12" class="py-10">
-        <v-btn-toggle v-model="text" mandatory group>
-          <v-btn value="all">
-            <span class="hidden-sm-and-down">All</span>
-          </v-btn>
+    <div
+      v-if="
+        $auth.loggedIn && $auth.$storage.getLocalStorage('role') === 'staff'
+      "
+    >
+      <v-container>
+        <v-col cols="12" class="py-10">
+          <v-btn-toggle v-model="text" mandatory group>
+            <v-btn value="all">
+              <span class="hidden-sm-and-down">All</span>
+            </v-btn>
 
-          <v-btn value="pending">
-            <span class="hidden-sm-and-down">Pending</span>
-          </v-btn>
+            <v-btn value="pending">
+              <span class="hidden-sm-and-down">Pending</span>
+            </v-btn>
 
-          <v-btn value="approved">
-            <span class="hidden-sm-and-down">Approved</span>
-          </v-btn>
+            <v-btn value="approved">
+              <span class="hidden-sm-and-down">Approved</span>
+            </v-btn>
 
-          <v-btn value="rejected">
-            <span class="hidden-sm-and-down">Rejected</span>
-          </v-btn>
-        </v-btn-toggle>
-      </v-col>
-
-      <v-row style="height: 70vh; overflow-y: scroll">
-        <v-col v-for="(item, i) in items" :key="i" md="4" class="mb-5">
-          <StatusCardVue :item="item" :readMore="readMore" :staff="true" />
+            <v-btn value="rejected">
+              <span class="hidden-sm-and-down">Rejected</span>
+            </v-btn>
+          </v-btn-toggle>
         </v-col>
-      </v-row>
-    </v-container>
 
-    <v-card-actions style="justify-content: space-evenly">
-      <v-dialog v-model="dialog" max-width="500">
-        <PetitionCard
-          :confirmation="confirmation"
-          :room="select"
-          :staff="true"
-        />
-      </v-dialog>
-    </v-card-actions>
+        <v-row style="height: 70vh; overflow-y: scroll">
+          <v-col v-for="(item, i) in items" :key="i" md="4" class="mb-5">
+            <StatusCardVue :item="item" :readMore="readMore" :staff="true" />
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <v-card-actions style="justify-content: space-evenly">
+        <v-dialog v-model="dialog" max-width="500">
+          <PetitionCard
+            :confirmation="confirmation"
+            :room="select"
+            :staff="true"
+          />
+        </v-dialog>
+      </v-card-actions>
+    </div>
+    <v-row v-else justify="center" align="center">
+      <h1 style="font-size: 5rem">You're not Staff GTFO</h1>
+    </v-row>
   </v-app>
 </template>
 

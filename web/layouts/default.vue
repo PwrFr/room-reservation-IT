@@ -14,9 +14,11 @@
             <v-list-item link>
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ user }}
+                  {{ $auth.user.name }}
                 </v-list-item-title>
-
+                <div style="display: none">
+                  {{ user }}
+                </div>
                 <v-list-item-subtitle>{{
                   $auth.user.email
                 }}</v-list-item-subtitle>
@@ -45,9 +47,8 @@
           <v-divider></v-divider>
           <v-list shaped>
             <v-list-item
-              v-for="(item, i) in items"
-              :key="i"
-              :to="item.to"
+              target=".v-list-item"
+              to="/"
               router
               exact
               style="padding-left: 0.4rem"
@@ -56,12 +57,54 @@
                 <v-list-item-title>
                   <lord-icon
                     target=".v-list-item"
-                    :src="item.src"
+                    src="https://cdn.lordicon.com/gmzxduhd.json"
                     trigger="morph"
                     style="width: 2.5rem; height: 2.5rem"
                   >
                   </lord-icon>
-                  {{ item.title }}</v-list-item-title
+                  หน้าหลัก</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item
+              v-if="role === 'student'"
+              target=".v-list-item"
+              to="/booking"
+              router
+              exact
+              style="padding-left: 0.4rem"
+            >
+              <v-list-item-content>
+                <v-list-item-title>
+                  <lord-icon
+                    target=".v-list-item"
+                    src="https://cdn.lordicon.com/puvaffet.json"
+                    trigger="morph"
+                    style="width: 2.5rem; height: 2.5rem"
+                  >
+                  </lord-icon>
+                  ห้องที่จองไว้</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item
+              v-if="role === 'staff'"
+              target=".v-list-item"
+              to="/approved"
+              router
+              exact
+              style="padding-left: 0.4rem"
+            >
+              <v-list-item-content>
+                <v-list-item-title>
+                  <lord-icon
+                    target=".v-list-item"
+                    src="https://cdn.lordicon.com/yyecauzv.json"
+                    trigger="morph"
+                    style="width: 2.5rem; height: 2.5rem"
+                  >
+                  </lord-icon>
+                  อนุมัติการจองห้อง</v-list-item-title
                 >
               </v-list-item-content>
             </v-list-item>
@@ -117,45 +160,61 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 // import { h } from "vue";
-
+const GET_ROLE = gql`
+  mutation CreateAccount(
+    $acc_id: String!
+    $fname: String!
+    $lname: String!
+    $email: String!
+  ) {
+    createAccount(
+      input: {
+        account_id: $acc_id
+        first_name: $fname
+        last_name: $lname
+        email: $email
+      }
+    ) {
+      account_id
+      first_name
+      last_name
+      role
+      email
+    }
+  }
+`;
 export default {
+  data() {
+    return {
+      role: "",
+    };
+  },
   methods: {
     login() {
       this.$auth.loginWith("google");
     },
     logout() {
       this.$auth.logout();
+      this.$auth.$storage.removeLocalStorage("role");
       location.reload();
     },
   },
-  data() {
-    return {
-      items: [
-        {
-          title: "หน้าหลัก",
-          src: "https://cdn.lordicon.com/gmzxduhd.json",
-          to: "/",
-        },
-
-        {
-          title: "ห้องที่จองไว้",
-          src: "https://cdn.lordicon.com/puvaffet.json",
-          to: "/booking",
-        },
-        {
-          title: "อนุมัติการจองห้อง",
-          src: "https://cdn.lordicon.com/yyecauzv.json",
-          to: "/approved",
-        },
-      ],
-    };
-  },
   computed: {
-    user() {
-      // alert("go some where");
-
-      return this.$auth.user.name;
+    async user() {
+      const role = await this.$apollo.mutate({
+        mutation: GET_ROLE,
+        variables: {
+          acc_id: this.$auth.user.sub,
+          fname: this.$auth.user.given_name,
+          lname: this.$auth.user.family_name,
+          email: this.$auth.user.email,
+        },
+      });
+      this.$auth.$storage.setLocalStorage("role", role.data.createAccount.role);
+      this.role = role.data.createAccount.role;
+      // return this.$auth.user.name;
     },
   },
 };
