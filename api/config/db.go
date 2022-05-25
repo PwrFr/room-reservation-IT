@@ -42,8 +42,7 @@ func CallDB() *pg.DB {
 }
 
 func NewDBConn() (con *pg.DB) {
-	fmt.Println(Env("PG_USER"))
-	address := fmt.Sprintf("%s:%s", "localhost", "5432")
+	address := fmt.Sprintf("%s:%s", Env("PG_HOST"), Env("PG_PORT"))
 	options := &pg.Options{
 		User:     Env("PG_USER"),
 		Password: Env("PG_PASSWORD"),

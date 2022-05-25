@@ -11,7 +11,7 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	RepoDB repo.RepoDB
-	rooms  []*model.Room
-	users  []*model.User
+	RepoDB  repo.RepoDB
+	rooms   []*model.Room
+	account []*model.Account
 }
