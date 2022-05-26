@@ -12,15 +12,15 @@
               <span class="hidden-sm-and-down">All</span>
             </v-btn>
 
-            <v-btn value="pending">
+            <v-btn value="Pending" color="warning" text>
               <span class="hidden-sm-and-down">Pending</span>
             </v-btn>
 
-            <v-btn value="approved">
+            <v-btn value="Approved" color="success" text>
               <span class="hidden-sm-and-down">Approved</span>
             </v-btn>
 
-            <v-btn value="rejected">
+            <v-btn value="Rejected" color="error" text>
               <span class="hidden-sm-and-down">Rejected</span>
             </v-btn>
           </v-btn-toggle>
@@ -37,8 +37,13 @@
           ></v-col>
         </v-row>
         <v-row v-else style="height: 70vh; overflow-y: scroll">
-          <v-col v-for="(item, i) in items" :key="i" md="4" class="mb-5">
-            <StatusCardVue :item="item" :readMore="readMore" :staff="true" />
+          <v-col v-for="(item, i) in filterReq" :key="i" md="4" class="mb-5">
+            <StatusCardVue
+              :item="item"
+              :readMore="readMore"
+              :staff="true"
+              :approve="item.status == 'Pending' ? true : false"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -81,7 +86,7 @@ export default {
     },
   },
   data: () => ({
-    text: "all",
+    text: "Pending",
     items: [
       {
         room: "M22",
@@ -101,35 +106,35 @@ export default {
         room: "M24",
         reserveDate: "24/5/2022",
         attendee: "62",
-        status: "Pending",
+        status: "Rejected",
         purpose: "Want to study",
       },
       {
         room: "M25",
         reserveDate: "25/5/2022",
         attendee: "63",
-        status: "Pending",
+        status: "Approved",
         purpose: "Want to study",
       },
       {
-        room: "M25",
+        room: "M26",
         reserveDate: "25/5/2022",
         attendee: "63",
         status: "Pending",
         purpose: "Want to study",
       },
       {
-        room: "M25",
+        room: "M27",
         reserveDate: "25/5/2022",
         attendee: "63",
-        status: "Pending",
+        status: "Approved",
         purpose: "Want to study",
       },
       {
-        room: "M25",
+        room: "M28",
         reserveDate: "25/5/2022",
         attendee: "63",
-        status: "Pending",
+        status: "Rejected",
         purpose: "Want to study",
       },
     ],
@@ -147,6 +152,17 @@ export default {
     readMore(item) {
       this.dialog = true;
       this.select = item;
+    },
+  },
+  computed: {
+    filterReq() {
+      return this.items.filter((req) => {
+        if (this.text !== "all") {
+          return req.status.match(this.text);
+        } else {
+          return this.items;
+        }
+      });
     },
   },
 };

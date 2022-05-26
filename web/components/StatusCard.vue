@@ -29,7 +29,7 @@
             {{ item.status }} </v-chip
           ><br />
         </v-col>
-        <v-row v-if="staff" justify="center">
+        <v-row v-if="approve" justify="center">
           <v-btn
             color="warning"
             class="px-10"
@@ -47,7 +47,7 @@
 
 <script>
 export default {
-  props: ["item", "readMore", "staff"],
+  props: ["item", "readMore", "staff", "approve"],
 };
 </script>
 

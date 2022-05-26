@@ -29,7 +29,8 @@
                   v-model="name"
                   label="Room name"
                   color="black"
-                  filled
+                  outlined
+                  shaped
                   required
                 ></v-text-field>
               </v-col>
@@ -40,7 +41,8 @@
                   label="Attendance"
                   type="number"
                   color="black"
-                  filled
+                  outlined
+                  shaped
                   required
                 ></v-text-field>
               </v-col>
