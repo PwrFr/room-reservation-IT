@@ -3,15 +3,15 @@
     <v-card class="rounded-lg" :elevation="hover ? 4 : 0" outlined>
       <v-row no-gutters align="center">
         <v-col md="4" class="py-6 text-3xl text-center">
-          <span style="color: #e91e63"> {{ item.room }} </span>
+          <span style="color: #e91e63">req {{ item.request_id }} </span>
         </v-col>
 
         <v-col md="8" class="py-6">
-          <span> Reserve Date : </span>
-          {{ item.reserveDate }}<br />
+          <span>Date : </span>
+          {{ item.start_datetime }} ~ {{ item.end_datetime }} <br />
 
           <span> Attendee : </span>
-          {{ item.attendee }}<br />
+          {{ item.request_attendee }}<br />
 
           <span> Status : </span>
           <v-chip
@@ -19,14 +19,14 @@
             outlined
             class=""
             :color="
-              item.status == 'Approved'
+              item.request_status == 'approved'
                 ? '#4CAF50'
-                : item.status == 'Pending'
+                : item.request_status == 'pending'
                 ? '#FFC107'
                 : '#F44336'
             "
           >
-            {{ item.status }} </v-chip
+            {{ item.request_status }} </v-chip
           ><br />
         </v-col>
         <v-row v-if="approve" justify="center">

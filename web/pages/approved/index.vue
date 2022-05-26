@@ -12,15 +12,15 @@
               <span class="hidden-sm-and-down">All</span>
             </v-btn>
 
-            <v-btn value="Pending" color="warning" text>
+            <v-btn value="pending" color="warning" text>
               <span class="hidden-sm-and-down">Pending</span>
             </v-btn>
 
-            <v-btn value="Approved" color="success" text>
+            <v-btn value="approved" color="success" text>
               <span class="hidden-sm-and-down">Approved</span>
             </v-btn>
 
-            <v-btn value="Rejected" color="error" text>
+            <v-btn value="rejected" color="error" text>
               <span class="hidden-sm-and-down">Rejected</span>
             </v-btn>
           </v-btn-toggle>
@@ -42,7 +42,7 @@
               :item="item"
               :readMore="readMore"
               :staff="true"
-              :approve="item.status == 'Pending' ? true : false"
+              :approve="item.request_status == 'pending' ? true : false"
             />
           </v-col>
         </v-row>
@@ -69,9 +69,16 @@ import gql from "graphql-tag";
 import PetitionCard from "../../components/PetitionCard.vue";
 import StatusCardVue from "../../components/StatusCard.vue";
 const REQ_ROOMS = gql`
-  query {
-    rooms {
-      room_name
+  query request {
+    request {
+      request_id
+      room_id
+      request_purpose
+      request_attendee
+      request_status
+      start_datetime
+      end_datetime
+      request_by
     }
   }
 `;
@@ -81,63 +88,12 @@ export default {
     StatusCardVue,
   },
   apollo: {
-    rooms: {
+    request: {
       query: REQ_ROOMS,
     },
   },
   data: () => ({
-    text: "Pending",
-    items: [
-      {
-        room: "M22",
-        reserveDate: "22/5/2022",
-        attendee: "60",
-        status: "Pending",
-        purpose: "Want to study",
-      },
-      {
-        room: "M23",
-        reserveDate: "23/5/2022",
-        attendee: "61",
-        status: "Pending",
-        purpose: "Want to study",
-      },
-      {
-        room: "M24",
-        reserveDate: "24/5/2022",
-        attendee: "62",
-        status: "Rejected",
-        purpose: "Want to study",
-      },
-      {
-        room: "M25",
-        reserveDate: "25/5/2022",
-        attendee: "63",
-        status: "Approved",
-        purpose: "Want to study",
-      },
-      {
-        room: "M26",
-        reserveDate: "25/5/2022",
-        attendee: "63",
-        status: "Pending",
-        purpose: "Want to study",
-      },
-      {
-        room: "M27",
-        reserveDate: "25/5/2022",
-        attendee: "63",
-        status: "Approved",
-        purpose: "Want to study",
-      },
-      {
-        room: "M28",
-        reserveDate: "25/5/2022",
-        attendee: "63",
-        status: "Rejected",
-        purpose: "Want to study",
-      },
-    ],
+    text: "pending",
     select: {},
     mini: true,
     dialog: false,
@@ -156,11 +112,11 @@ export default {
   },
   computed: {
     filterReq() {
-      return this.items.filter((req) => {
+      return this.$apolloData.data.request.filter((req) => {
         if (this.text !== "all") {
-          return req.status.match(this.text);
+          return req.request_status.match(this.text);
         } else {
-          return this.items;
+          return this.$apolloData.data.request;
         }
       });
     },
