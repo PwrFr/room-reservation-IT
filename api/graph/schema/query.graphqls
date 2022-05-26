@@ -1,0 +1,7 @@
+type Query {
+  rooms: [Room!]!
+  account: [Account!]!
+  accountById(account_id: String!): Account!
+  accountStudent(account_id: String!): AccountStudent!
+  request: [Request!]!
+}

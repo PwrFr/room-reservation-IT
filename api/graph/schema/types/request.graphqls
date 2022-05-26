@@ -1,0 +1,26 @@
+scalar Time
+
+type Request {
+  request_id: Int!
+  room_id: Int!
+  request_purpose: String!
+  request_attendee: Int!
+  request_status: String!
+  start_datetime: Time!
+  end_datetime: Time!
+  request_by: String!
+  request_datetime: Time!
+  approve_by: String
+  approve_datetime: Time
+  remark: String!
+}
+
+input NewRequest {
+  room_id: Int!
+  request_purpose: String!
+  request_attendee: Int!
+  start_datetime: Time!
+  end_datetime: Time!
+  request_by: String!
+}
+
