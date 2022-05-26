@@ -500,20 +500,37 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "graph/schema.graphqls", Input: `# GraphQL schema example
+	{Name: "graph/schema/mutation.graphqls", Input: `type Mutation {
+  createRoom(input: NewRoom!): Room!
+  createAccount(input: NewAccount!): Account!
+  createRequest(input: NewRequest!): Request!
+}
+`, BuiltIn: false},
+	{Name: "graph/schema/query.graphqls", Input: `type Query {
+  rooms: [Room!]!
+  account: [Account!]!
+  accountById(account_id: String!): Account!
+  request: [Request!]!
+}`, BuiltIn: false},
+	{Name: "graph/schema/schema.graphqls", Input: `# GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
-scalar Time
-
-type Room {
-  room_id: ID!
-  room_name: String!
-  room_status: String!
-  room_capacity: Int!
-  type_id: Int!
-  room_type: RoomType!
-  room_facility: [RoomFacility!]!
+`, BuiltIn: false},
+	{Name: "graph/schema/types/account.graphqls", Input: `type Account {
+  account_id: String!
+	first_name: String!
+	last_name: String!
+	role: String! 
+	email: String!
 }
+
+input NewAccount {
+  account_id: String!
+	first_name: String!
+	last_name: String!
+	email: String!
+}`, BuiltIn: false},
+	{Name: "graph/schema/types/request.graphqls", Input: `scalar Time
 
 type Request {
   request_id: Int!
@@ -525,9 +542,37 @@ type Request {
   end_datetime: Time!
   request_by: String!
   request_datetime: Time!
-  approve_by: String!
-  approve_datetime: Time!
+  approve_by: String
+  approve_datetime: Time
   remark: String!
+}
+
+input NewRequest {
+  room_id: Int!
+  request_purpose: String!
+  request_attendee: Int!
+  start_datetime: Time!
+  end_datetime: Time!
+  request_by: String!
+}
+
+`, BuiltIn: false},
+	{Name: "graph/schema/types/room.graphqls", Input: `input NewRoom {
+  room_name: String!
+  room_capacity: Int!
+  type_id: Int!
+
+}
+
+
+type Room {
+  room_id: ID!
+  room_name: String!
+  room_status: String!
+  room_capacity: Int!
+  type_id: Int!
+  room_type: RoomType!
+  room_facility: [RoomFacility!]!
 }
 
 type RoomType {
@@ -547,51 +592,6 @@ type Facility {
 	facility_name: String!
 }
 
-
-type Account {
-  account_id: String!
-	first_name: String!
-	last_name: String!
-	role: String! 
-	email: String!
-}
-
-type Query {
-  rooms: [Room!]!
-  account: [Account!]!
-  accountById(account_id: String!): Account!
-  request: [Request!]!
-
-}
-
-input NewAccount {
-  account_id: String!
-	first_name: String!
-	last_name: String!
-	email: String!
-}
-
-input NewRoom {
-  room_name: String!
-  room_capacity: Int!
-  type_id: Int!
-
-}
-
-input NewRequest {
-  room_id: Int!
-  request_purpose: String!
-  request_attendee: Int!
-  start_datetime: Time!
-  end_datetime: Time!
-  request_by: String!
-}
-
-type Mutation {
-  createRoom(input: NewRoom!): Room!
-  createAccount(input: NewAccount!): Account!
-  createRequest(input: NewRequest!): Request!
-}
 `, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -2039,14 +2039,11 @@ func (ec *executionContext) _Request_approve_by(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_approve_by(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2083,14 +2080,11 @@ func (ec *executionContext) _Request_approve_datetime(ctx context.Context, field
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_approve_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5033,16 +5027,10 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = ec._Request_approve_by(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "approve_datetime":
 
 			out.Values[i] = ec._Request_approve_datetime(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "remark":
 
 			out.Values[i] = ec._Request_remark(ctx, field, obj)
@@ -6150,6 +6138,16 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
+	res, err := graphql.UnmarshalString(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalString(v)
+	return res
+}
+
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
 	if v == nil {
 		return nil, nil
@@ -6163,6 +6161,16 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
+	res := graphql.MarshalTime(v)
 	return res
 }
 

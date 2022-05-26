@@ -1,0 +1,14 @@
+type Account {
+  account_id: String!
+	first_name: String!
+	last_name: String!
+	role: String! 
+	email: String!
+}
+
+input NewAccount {
+  account_id: String!
+	first_name: String!
+	last_name: String!
+	email: String!
+}

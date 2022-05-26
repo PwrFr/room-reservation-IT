@@ -1,0 +1,35 @@
+input NewRoom {
+  room_name: String!
+  room_capacity: Int!
+  type_id: Int!
+
+}
+
+
+type Room {
+  room_id: ID!
+  room_name: String!
+  room_status: String!
+  room_capacity: Int!
+  type_id: Int!
+  room_type: RoomType!
+  room_facility: [RoomFacility!]!
+}
+
+type RoomType {
+  type_id: Int!
+	type_name: String!
+}
+
+type RoomFacility {
+  facility_id: Int!
+	room_id: Int!
+	quantity: Int!
+	facility: Facility!
+}
+
+type Facility {
+  facility_id: Int!
+	facility_name: String!
+}
+
