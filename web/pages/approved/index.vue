@@ -25,8 +25,18 @@
             </v-btn>
           </v-btn-toggle>
         </v-col>
-
-        <v-row style="height: 70vh; overflow-y: scroll">
+        <v-row
+          style="height: 70vh; overflow-y: scroll"
+          v-if="$apolloData.loading"
+        >
+          <v-col v-for="(item, i) in 6" :key="i" md="4">
+            <v-skeleton-loader
+              max-width="300"
+              type="list-item-three-line, actions"
+            ></v-skeleton-loader
+          ></v-col>
+        </v-row>
+        <v-row v-else style="height: 70vh; overflow-y: scroll">
           <v-col v-for="(item, i) in items" :key="i" md="4" class="mb-5">
             <StatusCardVue :item="item" :readMore="readMore" :staff="true" />
           </v-col>
@@ -50,12 +60,25 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 import PetitionCard from "../../components/PetitionCard.vue";
 import StatusCardVue from "../../components/StatusCard.vue";
+const REQ_ROOMS = gql`
+  query {
+    rooms {
+      room_name
+    }
+  }
+`;
 export default {
   components: {
     PetitionCard,
     StatusCardVue,
+  },
+  apollo: {
+    rooms: {
+      query: REQ_ROOMS,
+    },
   },
   data: () => ({
     text: "all",
