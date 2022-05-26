@@ -8,7 +8,6 @@ import (
 )
 
 func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error) {
-
 	new_acc := &model.Account{
 		AccountID: input.AccountID,
 		FirstName: input.FirstName,
@@ -18,13 +17,20 @@ func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 	}
 
 	acc, _ := m.RepoDB.GetAccountById(input.AccountID)
-	fmt.Println(acc == nil)
-	if acc == nil {
-		fmt.Println("1")
-		return m.RepoDB.InsertAccount(new_acc)
+	//if account is null will create new account
+	if acc != nil {
+		return acc, nil
+
 	}
-	fmt.Println("2")
-	return acc, nil
+	if new_acc.Email[9:] == "it.kmitl.ac.th" {
+		fmt.Println("in")
+		_, err := m.RepoDB.InsertStudent(new_acc.AccountID, new_acc.Email)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return m.RepoDB.InsertAccount(new_acc)
 }
 
 // func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error) {
