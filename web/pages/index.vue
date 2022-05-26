@@ -194,15 +194,6 @@ export default {
 
     //PetitionCardVue
     async reserve(p, a, d) {
-      console.log("room id : " + this.select.room_id);
-      console.log("room name : " + this.select.room_name);
-      console.log("purpose : " + p);
-      console.log("attendance : " + a);
-      // console.log("start date :" + d);
-      // console.log("end date :" + d);
-      console.log(d.length == 2 ? d[1] : d[0]);
-      console.log("user : " + this.$auth.user.sub);
-
       if (confirm("Are you sure?")) {
         await this.$apollo.mutate({
           mutation: RESERVATION,

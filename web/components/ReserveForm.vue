@@ -3,7 +3,7 @@
     <v-list-item three-line style="align-items: flex-start">
       <v-list-item-content>
         <v-list-item-subtitle style="font-size: 1.4rem; color: black">
-          {{ select.room_name }} : {{ select.room_id }}
+          {{ select.room_name }}
         </v-list-item-subtitle>
         <v-list-item-subtitle v-if="select.room_type" class="mt-3">
           Type : {{ select.room_type.type_name }}
