@@ -24,7 +24,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-card-text v-if="$auth.loggedIn"
-        >Reserve By {{ room.request_by }}</v-card-text
+        >Request By {{ room.request_by }}</v-card-text
       >
       <v-btn
         color="error"
