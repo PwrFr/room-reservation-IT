@@ -13,8 +13,8 @@ func (m *mutationResolver) CreateRequest(ctx context.Context, input model.NewReq
 		RequestPurpose:  input.RequestPurpose,
 		RequestAttendee: input.RequestAttendee,
 		RequestStatus:   "pending",
-		StartDatetime:   time.Now(),
-		EndDatetime:     time.Now(),
+		StartDatetime:   input.StartDatetime,
+		EndDatetime:     input.EndDatetime,
 		RequestBy:       input.RequestBy,
 		RequestDatetime: time.Now(),
 	}

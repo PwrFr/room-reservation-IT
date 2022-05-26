@@ -23,6 +23,16 @@ func (r *RepoDB) GetAccount() ([]*model.Account, error) {
 	return account, nil
 }
 
+func (r *RepoDB) GetAccountStudentById(input string) (*model.AccountStudent, error) {
+	var account model.AccountStudent
+	err := r.DB.Model(&account).Relation("Student").Where("account_id = ?", input).Select()
+	if err != nil {
+		return nil, err
+	}
+
+	return &account, nil
+}
+
 func (r *RepoDB) GetAccountById(input string) (*model.Account, error) {
 	var account model.Account
 	err := r.DB.Model(&account).Where("account_id = ?", input).Select()
@@ -47,7 +57,7 @@ func (r *RepoDB) InsertStudent(account_id string, email string) (*model.Student,
 		AccountID: account_id,
 		StudentID: email[:8],
 		Year:      strconv.Itoa(year - 1957 - st_year),
-		ProgramID: "1",
+		ProgramID: 1,
 	}
 
 	_, err := r.DB.Model(student).Returning("*").Insert()

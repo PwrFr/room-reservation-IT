@@ -23,6 +23,10 @@ func (r *queryResolver) AccountByID(ctx context.Context, accountID string) (*mod
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *queryResolver) AccountStudent(ctx context.Context, accountID string) (*model.AccountStudent, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *queryResolver) Request(ctx context.Context) ([]*model.Request, error) {
 	panic(fmt.Errorf("not implemented"))
 }

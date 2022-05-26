@@ -1,13 +1,30 @@
 type Account {
-  account_id: String!
+  	account_id: String!
 	first_name: String!
 	last_name: String!
 	role: String! 
 	email: String!
 }
 
+type AccountStudent {
+  	account_id: String!
+	first_name: String!
+	last_name: String!
+	role: String! 
+	email: String!
+	student: [Student!]!
+}
+
+type Student {
+	account_id: String!
+	student_id: String!
+	program_id: Int
+	phone: String
+	year: String!
+}
+
 input NewAccount {
-  account_id: String!
+  	account_id: String!
 	first_name: String!
 	last_name: String!
 	email: String!

@@ -33,23 +33,14 @@ func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 	return m.RepoDB.InsertAccount(new_acc)
 }
 
-// func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error) {
-
-// 	new_acc := &model.Account{
-// 		AccountID: input.AccountID,
-// 		FirstName: input.FirstName,
-// 		LastName:  input.LastName,
-// 		Email:     input.Email,
-// 		Role:      "student",
-// 	}
-
-// 	return m.RepoDB.InsertAccount(new_acc)
-// }
-
 func (r *queryResolver) Account(ctx context.Context) ([]*model.Account, error) {
 	return r.RepoDB.GetAccount()
 }
 
 func (r *queryResolver) AccountByID(ctx context.Context, accountID string) (*model.Account, error) {
 	return r.RepoDB.GetAccountById(accountID)
+}
+
+func (r *queryResolver) AccountStudent(ctx context.Context, accountID string) (*model.AccountStudent, error) {
+	return r.RepoDB.GetAccountStudentById(accountID)
 }
