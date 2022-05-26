@@ -31,6 +31,10 @@ func (r *queryResolver) Request(ctx context.Context) ([]*model.Request, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *queryResolver) RequestByID(ctx context.Context, accountID string) ([]*model.Request, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 

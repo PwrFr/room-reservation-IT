@@ -42,3 +42,7 @@ func (m *mutationResolver) UpdateRequest(ctx context.Context, input model.Approv
 func (r *queryResolver) Request(ctx context.Context) ([]*model.Request, error) {
 	return r.RepoDB.GetRequest()
 }
+
+func (r *queryResolver) RequestByID(ctx context.Context, accountID string) ([]*model.Request, error) {
+	return r.RepoDB.GetRequestById(accountID)
+}

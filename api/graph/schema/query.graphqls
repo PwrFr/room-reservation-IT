@@ -4,4 +4,5 @@ type Query {
   accountById(account_id: String!): Account!
   accountStudent(account_id: String!): AccountStudent!
   request: [Request!]!
+  requestById(account_id: String!): [Request!]!
 }
