@@ -2,10 +2,55 @@
   <v-row no-gutters>
     <v-col>
       <v-app class="m-4 rounded-3xl">
-        <SearchBarVue :filter="filter" />
+        <!-- <SearchBarVue :filter="filter" /> -->
+        <v-form class="mt-5">
+          <v-container>
+            <v-row>
+              <v-col cols="12" md="5">
+                <v-btn-toggle v-model="status" mandatory group>
+                  <v-btn value="all">
+                    <span class="hidden-sm-and-down">All</span>
+                  </v-btn>
+
+                  <v-btn value="Available" color="success" text>
+                    <span class="hidden-sm-and-down">Available</span>
+                  </v-btn>
+
+                  <v-btn value="Not available" color="error" text>
+                    <span class="hidden-sm-and-down">Unavailable</span>
+                  </v-btn>
+                  <v-btn value="Maintenance" color="primary" text>
+                    <span class="hidden-sm-and-down">maintenance</span>
+                  </v-btn>
+                </v-btn-toggle>
+              </v-col>
+              <v-col cols="12" md="5">
+                <v-text-field
+                  v-model="name"
+                  label="Room name"
+                  color="black"
+                  filled
+                  required
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="2">
+                <v-text-field
+                  v-model="capacity"
+                  label="Attendance"
+                  type="number"
+                  color="black"
+                  filled
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+
         <div class="rounded-3xl">
           <v-container
-            class="p-10"
+            class="p-0"
             grid-list-xs
             style="height: 74.1vh; overflow-y: scroll"
           >
@@ -24,11 +69,7 @@
             </v-row>
 
             <v-row v-else>
-              <v-col
-                cols="4"
-                v-for="(room, i) in $apolloData.data.rooms"
-                :key="i"
-              >
+              <v-col cols="4" v-for="(room, i) in filteredRoom" :key="i">
                 <RoomCardVue :room="room" :selected="selected" :check="check" />
               </v-col>
             </v-row>
@@ -98,6 +139,9 @@ export default {
     purpose: "",
     select: {},
     dates2: [],
+    name: "",
+    capacity: null,
+    status: "",
   }),
   apollo: {
     rooms: {
@@ -137,9 +181,9 @@ export default {
 
       this.attendance = a;
     },
-    filter(n, d, c) {
-      console.log(n, d, c);
-    },
+    // filter(n, d, c) {
+    //   console.log(n, d, c);
+    // },
   },
   computed: {
     detail() {
@@ -149,6 +193,56 @@ export default {
         attendee: this.attendance,
         reserveDate: this.dateRangeText2,
       };
+    },
+    filteredRoom() {
+      return this.$apolloData.data.rooms.filter((room) => {
+        if (this.status !== "all") {
+          if (this.name && this.capacity) {
+            return (
+              room.room_name.match(this.name) &&
+              room.room_capacity <= this.capacity &&
+              room.room_status.match(this.status)
+            );
+          }
+          if (this.name) {
+            return (
+              room.room_name.match(this.name) &&
+              room.room_status.match(this.status)
+            );
+          }
+          if (!this.capacity) {
+            return (
+              room.room_capacity >= this.capacity &&
+              room.room_status.match(this.status)
+            );
+          } else if (this.capacity) {
+            return (
+              room.room_capacity <= this.capacity &&
+              room.room_status.match(this.status)
+            );
+          }
+        } else {
+          if (this.name && this.capacity) {
+            return (
+              room.room_name.match(this.name) &&
+              room.room_capacity <= this.capacity
+            );
+          }
+          if (this.name) {
+            return room.room_name.match(this.name);
+          }
+          if (!this.capacity) {
+            return room.room_capacity >= this.capacity;
+          } else if (this.capacity) {
+            return room.room_capacity <= this.capacity;
+          }
+        }
+      });
+    },
+    statusRoom() {
+      return this.$apolloData.data.rooms.filter((room) => {
+        return room.room_status.match(this.status);
+      });
     },
   },
 };

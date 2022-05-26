@@ -26,7 +26,13 @@
         x-small
         outlined
         class="mt-2"
-        :color="select.room_status == 'Available' ? '#4CAF50' : '#F44336'"
+        :color="
+          select.room_status == 'Available'
+            ? '#4CAF50'
+            : select.room_status == 'Not available'
+            ? '#F44336'
+            : '#2196F3'
+        "
       >
         {{ select.room_status }}
       </v-chip>

@@ -17,7 +17,13 @@
           label
           outlined
           class="mt-2"
-          :color="room.room_status == 'Available' ? 'green' : 'red'"
+          :color="
+            room.room_status == 'Available'
+              ? 'green'
+              : room.room_status == 'Not available'
+              ? 'red'
+              : 'primary'
+          "
         >
           {{ room.room_status }}
         </v-chip>
