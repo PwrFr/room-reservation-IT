@@ -2,4 +2,5 @@ type Mutation {
   createRoom(input: NewRoom!): Room!
   createAccount(input: NewAccount!): Account!
   createRequest(input: NewRequest!): Request!
+  updateRequest(input: Approve!): ApproveOutput!
 }

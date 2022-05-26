@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -62,6 +61,14 @@ type ComplexityRoot struct {
 		Student   func(childComplexity int) int
 	}
 
+	ApproveOutput struct {
+		ApproveBy       func(childComplexity int) int
+		ApproveDatetime func(childComplexity int) int
+		Remark          func(childComplexity int) int
+		RequestID       func(childComplexity int) int
+		RequestStatus   func(childComplexity int) int
+	}
+
 	Facility struct {
 		FacilityID   func(childComplexity int) int
 		FacilityName func(childComplexity int) int
@@ -71,6 +78,7 @@ type ComplexityRoot struct {
 		CreateAccount func(childComplexity int, input model.NewAccount) int
 		CreateRequest func(childComplexity int, input model.NewRequest) int
 		CreateRoom    func(childComplexity int, input model.NewRoom) int
+		UpdateRequest func(childComplexity int, input model.Approve) int
 	}
 
 	Query struct {
@@ -131,6 +139,7 @@ type MutationResolver interface {
 	CreateRoom(ctx context.Context, input model.NewRoom) (*model.Room, error)
 	CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error)
 	CreateRequest(ctx context.Context, input model.NewRequest) (*model.Request, error)
+	UpdateRequest(ctx context.Context, input model.Approve) (*model.ApproveOutput, error)
 }
 type QueryResolver interface {
 	Rooms(ctx context.Context) ([]*model.Room, error)
@@ -232,6 +241,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AccountStudent.Student(childComplexity), true
 
+	case "ApproveOutput.approve_by":
+		if e.complexity.ApproveOutput.ApproveBy == nil {
+			break
+		}
+
+		return e.complexity.ApproveOutput.ApproveBy(childComplexity), true
+
+	case "ApproveOutput.approve_datetime":
+		if e.complexity.ApproveOutput.ApproveDatetime == nil {
+			break
+		}
+
+		return e.complexity.ApproveOutput.ApproveDatetime(childComplexity), true
+
+	case "ApproveOutput.remark":
+		if e.complexity.ApproveOutput.Remark == nil {
+			break
+		}
+
+		return e.complexity.ApproveOutput.Remark(childComplexity), true
+
+	case "ApproveOutput.request_id":
+		if e.complexity.ApproveOutput.RequestID == nil {
+			break
+		}
+
+		return e.complexity.ApproveOutput.RequestID(childComplexity), true
+
+	case "ApproveOutput.request_status":
+		if e.complexity.ApproveOutput.RequestStatus == nil {
+			break
+		}
+
+		return e.complexity.ApproveOutput.RequestStatus(childComplexity), true
+
 	case "Facility.facility_id":
 		if e.complexity.Facility.FacilityID == nil {
 			break
@@ -281,6 +325,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateRoom(childComplexity, args["input"].(model.NewRoom)), true
+
+	case "Mutation.updateRequest":
+		if e.complexity.Mutation.UpdateRequest == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateRequest_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateRequest(childComplexity, args["input"].(model.Approve)), true
 
 	case "Query.account":
 		if e.complexity.Query.Account == nil {
@@ -545,6 +601,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputApprove,
 		ec.unmarshalInputNewAccount,
 		ec.unmarshalInputNewRequest,
 		ec.unmarshalInputNewRoom,
@@ -612,6 +669,7 @@ var sources = []*ast.Source{
   createRoom(input: NewRoom!): Room!
   createAccount(input: NewAccount!): Account!
   createRequest(input: NewRequest!): Request!
+  updateRequest(input: Approve!): ApproveOutput!
 }
 `, BuiltIn: false},
 	{Name: "graph/schema/query.graphqls", Input: `type Query {
@@ -659,20 +717,18 @@ input NewAccount {
 	last_name: String!
 	email: String!
 }`, BuiltIn: false},
-	{Name: "graph/schema/types/request.graphqls", Input: `scalar Time
-
-type Request {
+	{Name: "graph/schema/types/request.graphqls", Input: `type Request {
   request_id: Int!
   room_id: Int!
   request_purpose: String!
   request_attendee: Int!
   request_status: String!
-  start_datetime: Time!
-  end_datetime: Time!
+  start_datetime: String!
+  end_datetime: String!
   request_by: String!
-  request_datetime: Time!
+  request_datetime: String!
   approve_by: String
-  approve_datetime: Time
+  approve_datetime: String
   remark: String!
 }
 
@@ -680,12 +736,27 @@ input NewRequest {
   room_id: Int!
   request_purpose: String!
   request_attendee: Int!
-  start_datetime: Time!
-  end_datetime: Time!
+  start_datetime: String!
+  end_datetime: String!
   request_by: String!
 }
 
-`, BuiltIn: false},
+input Approve {
+    approve_by: String!
+    request_id: Int!
+    request_status: String!
+    approve_datetime: String
+    remark: String
+    room_id: Int
+}
+
+type ApproveOutput {
+    approve_by: String!
+    request_id: Int!
+    request_status: String!
+    approve_datetime: String
+    remark: String
+}`, BuiltIn: false},
 	{Name: "graph/schema/types/room.graphqls", Input: `input NewRoom {
   room_name: String!
   room_capacity: Int!
@@ -695,7 +766,7 @@ input NewRequest {
 
 
 type Room {
-  room_id: ID!
+  room_id: Int!
   room_name: String!
   room_status: String!
   room_capacity: Int!
@@ -766,6 +837,21 @@ func (ec *executionContext) field_Mutation_createRoom_args(ctx context.Context, 
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewRoom2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐNewRoom(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.Approve
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNApprove2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐApprove(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1353,6 +1439,220 @@ func (ec *executionContext) fieldContext_AccountStudent_student(ctx context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _ApproveOutput_approve_by(ctx context.Context, field graphql.CollectedField, obj *model.ApproveOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ApproveOutput_approve_by(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ApproveBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ApproveOutput_approve_by(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ApproveOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ApproveOutput_request_id(ctx context.Context, field graphql.CollectedField, obj *model.ApproveOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ApproveOutput_request_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ApproveOutput_request_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ApproveOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ApproveOutput_request_status(ctx context.Context, field graphql.CollectedField, obj *model.ApproveOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ApproveOutput_request_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestStatus, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ApproveOutput_request_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ApproveOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ApproveOutput_approve_datetime(ctx context.Context, field graphql.CollectedField, obj *model.ApproveOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ApproveOutput_approve_datetime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ApproveDatetime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ApproveOutput_approve_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ApproveOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ApproveOutput_remark(ctx context.Context, field graphql.CollectedField, obj *model.ApproveOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ApproveOutput_remark(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Remark, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ApproveOutput_remark(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ApproveOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Facility_facility_id(ctx context.Context, field graphql.CollectedField, obj *model.Facility) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Facility_facility_id(ctx, field)
 	if err != nil {
@@ -1654,6 +1954,73 @@ func (ec *executionContext) fieldContext_Mutation_createRequest(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateRequest(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateRequest(rctx, fc.Args["input"].(model.Approve))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.ApproveOutput)
+	fc.Result = res
+	return ec.marshalNApproveOutput2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐApproveOutput(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "approve_by":
+				return ec.fieldContext_ApproveOutput_approve_by(ctx, field)
+			case "request_id":
+				return ec.fieldContext_ApproveOutput_request_id(ctx, field)
+			case "request_status":
+				return ec.fieldContext_ApproveOutput_request_status(ctx, field)
+			case "approve_datetime":
+				return ec.fieldContext_ApproveOutput_approve_datetime(ctx, field)
+			case "remark":
+				return ec.fieldContext_ApproveOutput_remark(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ApproveOutput", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -2357,9 +2724,9 @@ func (ec *executionContext) _Request_start_datetime(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_start_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2369,7 +2736,7 @@ func (ec *executionContext) fieldContext_Request_start_datetime(ctx context.Cont
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2401,9 +2768,9 @@ func (ec *executionContext) _Request_end_datetime(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_end_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2413,7 +2780,7 @@ func (ec *executionContext) fieldContext_Request_end_datetime(ctx context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2489,9 +2856,9 @@ func (ec *executionContext) _Request_request_datetime(ctx context.Context, field
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_request_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2501,7 +2868,7 @@ func (ec *executionContext) fieldContext_Request_request_datetime(ctx context.Co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2571,9 +2938,9 @@ func (ec *executionContext) _Request_approve_datetime(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_approve_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2583,7 +2950,7 @@ func (ec *executionContext) fieldContext_Request_approve_datetime(ctx context.Co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2659,9 +3026,9 @@ func (ec *executionContext) _Room_room_id(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Room_room_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2671,7 +3038,7 @@ func (ec *executionContext) fieldContext_Room_room_id(ctx context.Context, field
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -5214,6 +5581,69 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputApprove(ctx context.Context, obj interface{}) (model.Approve, error) {
+	var it model.Approve
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "approve_by":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("approve_by"))
+			it.ApproveBy, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "request_id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("request_id"))
+			it.RequestID, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "request_status":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("request_status"))
+			it.RequestStatus, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "approve_datetime":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("approve_datetime"))
+			it.ApproveDatetime, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "remark":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("remark"))
+			it.Remark, err = ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "room_id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("room_id"))
+			it.RoomID, err = ec.unmarshalOInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj interface{}) (model.NewAccount, error) {
 	var it model.NewAccount
 	asMap := map[string]interface{}{}
@@ -5298,7 +5728,7 @@ func (ec *executionContext) unmarshalInputNewRequest(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("start_datetime"))
-			it.StartDatetime, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
+			it.StartDatetime, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5306,7 +5736,7 @@ func (ec *executionContext) unmarshalInputNewRequest(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("end_datetime"))
-			it.EndDatetime, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
+			it.EndDatetime, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5490,6 +5920,56 @@ func (ec *executionContext) _AccountStudent(ctx context.Context, sel ast.Selecti
 	return out
 }
 
+var approveOutputImplementors = []string{"ApproveOutput"}
+
+func (ec *executionContext) _ApproveOutput(ctx context.Context, sel ast.SelectionSet, obj *model.ApproveOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, approveOutputImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ApproveOutput")
+		case "approve_by":
+
+			out.Values[i] = ec._ApproveOutput_approve_by(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "request_id":
+
+			out.Values[i] = ec._ApproveOutput_request_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "request_status":
+
+			out.Values[i] = ec._ApproveOutput_request_status(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "approve_datetime":
+
+			out.Values[i] = ec._ApproveOutput_approve_datetime(ctx, field, obj)
+
+		case "remark":
+
+			out.Values[i] = ec._ApproveOutput_remark(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var facilityImplementors = []string{"Facility"}
 
 func (ec *executionContext) _Facility(ctx context.Context, sel ast.SelectionSet, obj *model.Facility) graphql.Marshaler {
@@ -5566,6 +6046,15 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createRequest(ctx, field)
+			})
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateRequest":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateRequest(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
@@ -6432,6 +6921,25 @@ func (ec *executionContext) marshalNAccountStudent2ᚖgithubᚗcomᚋPwrFrᚋgql
 	return ec._AccountStudent(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNApprove2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐApprove(ctx context.Context, v interface{}) (model.Approve, error) {
+	res, err := ec.unmarshalInputApprove(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNApproveOutput2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐApproveOutput(ctx context.Context, sel ast.SelectionSet, v model.ApproveOutput) graphql.Marshaler {
+	return ec._ApproveOutput(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNApproveOutput2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐApproveOutput(ctx context.Context, sel ast.SelectionSet, v *model.ApproveOutput) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ApproveOutput(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -6455,21 +6963,6 @@ func (ec *executionContext) marshalNFacility2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋ
 		return graphql.Null
 	}
 	return ec._Facility(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalID(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
 }
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
@@ -6749,21 +7242,6 @@ func (ec *executionContext) marshalNStudent2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋg
 		return graphql.Null
 	}
 	return ec._Student(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
-	res, err := graphql.UnmarshalTime(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
-	res := graphql.MarshalTime(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -7078,16 +7556,6 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
-	res, err := graphql.UnmarshalTime(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
-	res := graphql.MarshalTime(v)
 	return res
 }
 

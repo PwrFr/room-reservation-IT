@@ -11,11 +11,6 @@ import (
 func (r *RepoDB) GetRoom() ([]*model.Room, error) {
 	var room []*model.Room
 
-	// stm := `select * from room as r
-	// join room_type as rt on r.type_id = rt.type_id
-	// `
-	// _, err := r.DB.Query(&room, stm)
-
 	err := r.DB.Model(&room).
 		Relation("RoomType").
 		Relation("RoomFacility").
@@ -28,8 +23,6 @@ func (r *RepoDB) GetRoom() ([]*model.Room, error) {
 		return nil, err
 	}
 
-	// x, _ := json.Marshal(room)
-	// fmt.Println(string(x))
 	return room, nil
 }
 

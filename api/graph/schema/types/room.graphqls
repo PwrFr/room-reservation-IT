@@ -7,7 +7,7 @@ input NewRoom {
 
 
 type Room {
-  room_id: ID!
+  room_id: Int!
   room_name: String!
   room_status: String!
   room_capacity: Int!
