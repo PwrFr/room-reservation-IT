@@ -3,7 +3,7 @@ package model
 type Request struct {
 	tableName       struct{} `pg:"request"`
 	RequestID       int      `json:"request_id" pg:"request_id, pk"`
-	RoomID          int      `json:"room_id"`
+	RoomID          int      `json:"room_id" pg:"room_id"`
 	RequestPurpose  string   `json:"request_purpose"`
 	RequestAttendee int      `json:"request_attendee"`
 	RequestStatus   string   `json:"request_status"`
@@ -14,6 +14,7 @@ type Request struct {
 	ApproveBy       string   `json:"approve_by"`
 	ApproveDatetime string   `json:"approve_datetime"`
 	Remark          string   `json:"remark"`
+	Room            *Room    `pg:"rel:has-one"`
 }
 
 type NewRequest struct {

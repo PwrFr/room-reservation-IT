@@ -12,8 +12,8 @@ type Room {
   room_status: String!
   room_capacity: Int!
   type_id: Int!
-  room_type: RoomType!
-  room_facility: [RoomFacility!]!
+  room_type: RoomType
+  room_facility: [RoomFacility]
 }
 
 type RoomType {
