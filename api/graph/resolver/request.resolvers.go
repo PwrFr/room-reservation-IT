@@ -31,9 +31,10 @@ func (m *mutationResolver) UpdateRequest(ctx context.Context, input model.Approv
 		Remark:          input.Remark,
 	}
 
-	// if input.RequestStatus == "approved" {
-
-	// }
+	if input.RequestStatus == "approved" {
+		err := m.RepoDB.UpdateRoom(input.RoomID, "Not available")
+		_ = err
+	}
 
 	return m.RepoDB.UpdateRequest(new_req)
 }

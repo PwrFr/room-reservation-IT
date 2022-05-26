@@ -34,3 +34,17 @@ func (r *RepoDB) InsertRoom(room *model.Room) (*model.Room, error) {
 
 	return room, err
 }
+
+func (r *RepoDB) UpdateRoom(room_id int, status string) error {
+	var room *model.Room
+	_, err := r.DB.Model(room).
+		Set("room_status = ?", status).
+		Where("room_id = ?", room_id).
+		Update()
+	if err != nil {
+		fmt.Println("err", err)
+		return err
+	}
+
+	return nil
+}
