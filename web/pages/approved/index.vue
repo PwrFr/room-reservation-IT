@@ -59,7 +59,7 @@
       </v-card-actions>
     </div>
     <v-row v-else justify="center" align="center">
-      <h1 style="font-size: 5rem">You're not Staff GTFO</h1>
+      <h1 style="font-size: 5rem">You're not Staff</h1>
     </v-row>
   </v-app>
 </template>
