@@ -18,7 +18,7 @@ func (r *RepoDB) InsertRequest(request *model.Request) (*model.Request, error) {
 
 func (r *RepoDB) GetRequest() ([]*model.Request, error) {
 	var request []*model.Request
-	err := r.DB.Model(&request).Select()
+	err := r.DB.Model(&request).Relation("Room").Select()
 	if err != nil {
 		return nil, err
 	}

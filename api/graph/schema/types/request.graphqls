@@ -11,6 +11,7 @@ type Request {
   approve_by: String
   approve_datetime: String
   remark: String!
+  room: Room!
 }
 
 input NewRequest {

@@ -16,7 +16,7 @@ type AccountStudent struct {
 	LastName  string     `json:"last_name"`
 	Role      string     `json:"role"`
 	Email     string     `json:"email"`
-	Student   []*Student `pg:"rel:has-many"`
+	Student   []*Student `pg:"rel:has-one"`
 }
 
 type NewAccount struct {
