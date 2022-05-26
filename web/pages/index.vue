@@ -112,6 +112,7 @@ import SearchBarVue from "../components/SearchBar.vue";
 const ALL_ROOMS = gql`
   query rooms {
     rooms {
+      room_id
       room_name
       room_status
       room_capacity
@@ -123,6 +124,41 @@ const ALL_ROOMS = gql`
           facility_name
         }
       }
+    }
+  }
+`;
+
+const RESERVATION = gql`
+  mutation CreateReq(
+    $id: Int!
+    $purpose: String!
+    $atten: Int!
+    $sDate: String!
+    $eDate: String!
+    $user: String!
+  ) {
+    createRequest(
+      input: {
+        room_id: $id
+        request_purpose: $purpose
+        request_attendee: $atten
+        start_datetime: $sDate
+        end_datetime: $eDate
+        request_by: $user
+      }
+    ) {
+      request_id
+      room_id
+      request_purpose
+      request_attendee
+      request_status
+      start_datetime
+      end_datetime
+      request_by
+      request_datetime
+      approve_by
+      approve_datetime
+      remark
     }
   }
 `;
@@ -157,8 +193,28 @@ export default {
     },
 
     //PetitionCardVue
-    reserve() {
+    async reserve(p, a, d) {
+      console.log("room id : " + this.select.room_id);
+      console.log("room name : " + this.select.room_name);
+      console.log("purpose : " + p);
+      console.log("attendance : " + a);
+      // console.log("start date :" + d);
+      // console.log("end date :" + d);
+      console.log(d.length == 2 ? d[1] : d[0]);
+      console.log("user : " + this.$auth.user.sub);
+
       if (confirm("Are you sure?")) {
+        await this.$apollo.mutate({
+          mutation: RESERVATION,
+          variables: {
+            id: this.select.room_id,
+            purpose: p,
+            atten: a,
+            sDate: d[0],
+            eDate: d.length == 2 ? d[1] : d[0],
+            user: this.$auth.user.sub,
+          },
+        });
         (this.dialog = false), (this.mini = !this.mini);
         this.$refs.ReserveFormVue.resetForm();
       }
@@ -179,7 +235,7 @@ export default {
     check(p, d, a) {
       this.dialog = true;
       this.purpose = p;
-      this.dateRangeText2 = d;
+      this.dates2 = d;
 
       this.attendance = a;
     },
@@ -193,7 +249,7 @@ export default {
         room: this.select.room_name,
         purpose: this.purpose,
         attendee: this.attendance,
-        reserveDate: this.dateRangeText2,
+        reserveDate: this.dates2,
       };
     },
     filteredRoom() {

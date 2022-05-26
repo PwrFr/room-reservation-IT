@@ -3,7 +3,7 @@
     <v-list-item three-line style="align-items: flex-start">
       <v-list-item-content>
         <v-list-item-subtitle style="font-size: 1.4rem; color: black">
-          {{ select.room_name }}
+          {{ select.room_name }} : {{ select.room_id }}
         </v-list-item-subtitle>
         <v-list-item-subtitle v-if="select.room_type" class="mt-3">
           Type : {{ select.room_type.type_name }}
@@ -46,7 +46,6 @@
         rows="3"
         row-height="20"
       ></v-textarea>
-
       <v-menu
         ref="menu2"
         v-model="menu2"
@@ -97,7 +96,7 @@
       <v-btn
         text
         color="#2196F3"
-        @click.stop="validate(purpose, dateRangeText2, attendance)"
+        @click.stop="validate(purpose, dates2, attendance)"
       >
         Reserve
       </v-btn>
@@ -119,11 +118,11 @@ export default {
     };
   },
   methods: {
-    validate(purpose, dateRangeText2, attendance) {
+    validate(purpose, dates2, attendance) {
       if (this.$auth.loggedIn) {
         this.$refs.form.validate();
         if (this.valid) {
-          this.check(purpose, dateRangeText2, attendance);
+          this.check(purpose, dates2, attendance);
         }
       } else {
         alert("You need to Login First!");

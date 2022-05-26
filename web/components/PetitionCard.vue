@@ -17,7 +17,7 @@
     <v-card-text>
       <span style="font-size: 1.2rem"> Date</span>
       <v-divider class="mb-5"></v-divider>
-      <v-icon large> mdi-calendar </v-icon>{{ room.reserveDate }}
+      <v-icon large> mdi-calendar </v-icon>{{ dateJoin }}
     </v-card-text>
 
     <v-card-actions v-if="staff">
@@ -51,7 +51,13 @@
       >
       <v-btn color="green darken-1" text @click="cancel()"> Disagree </v-btn>
 
-      <v-btn color="green darken-1" text @click="reserve()"> Agree </v-btn>
+      <v-btn
+        color="green darken-1"
+        text
+        @click="reserve(room.purpose, room.attendee, room.reserveDate)"
+      >
+        Agree
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -59,6 +65,11 @@
 <script>
 export default {
   props: ["confirmation", "room", "staff", "cancel", "reserve"],
+  computed: {
+    dateJoin() {
+      return this.room.reserveDate.join(" ~ ");
+    },
+  },
 };
 </script>
 
