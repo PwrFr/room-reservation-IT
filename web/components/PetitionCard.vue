@@ -1,7 +1,7 @@
 <template>
   <v-card style="font-family: kanit" v-if="staff">
     <v-card-title style="font-size: 2rem">
-      Petition For {{ room.room_id }}
+      {{ index }}Petition For room {{ room.room.room_name }}
     </v-card-title>
 
     <v-card-text>
@@ -24,13 +24,13 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-card-text v-if="$auth.loggedIn"
-        >Reserve By {{ $auth.user.email }}</v-card-text
+        >Reserve By {{ room.request_by }}</v-card-text
       >
       <v-btn
         color="error"
         dark
         rounded
-        @click="confirmation(room.request_id, 'rejected')"
+        @click="confirmation(room.request_id, room.room_id, 'rejected', index)"
       >
         Reject <v-icon right dark> mdi-close </v-icon></v-btn
       >
@@ -38,7 +38,7 @@
         color="success"
         rounded
         dark
-        @click="confirmation(room.request_id, 'approved')"
+        @click="confirmation(room.request_id, room.room_id, 'approved', index)"
       >
         Approve
         <v-icon right dark> mdi-check </v-icon></v-btn
@@ -87,7 +87,7 @@
 
 <script>
 export default {
-  props: ["confirmation", "room", "staff", "cancel", "reserve"],
+  props: ["confirmation", "room", "staff", "cancel", "reserve", "index"],
   computed: {
     dateJoin() {
       return this.room.reserveDate.join(" ~ ");

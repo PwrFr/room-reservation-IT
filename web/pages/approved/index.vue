@@ -39,6 +39,7 @@
         <v-row v-else style="height: 70vh; overflow-y: scroll">
           <v-col v-for="(item, i) in filterReq" :key="i" md="4" class="mb-5">
             <StatusCardVue
+              :index="i"
               :item="item"
               :readMore="readMore"
               :staff="true"
@@ -54,6 +55,7 @@
             :confirmation="confirmation"
             :room="select"
             :staff="true"
+            :index="index"
           />
         </v-dialog>
       </v-card-actions>
@@ -73,12 +75,37 @@ const REQ_ROOMS = gql`
     request {
       request_id
       room_id
+      room {
+        room_name
+      }
       request_purpose
       request_attendee
       request_status
       start_datetime
       end_datetime
       request_by
+    }
+  }
+`;
+
+const UPD_REQ = gql`
+  mutation updateRequest(
+    $staff: String!
+    $reqId: Int!
+    $status: String!
+    $room: Int!
+  ) {
+    updateRequest(
+      input: {
+        approve_by: $staff
+        request_id: $reqId
+        request_status: $status
+        room_id: $room
+      }
+    ) {
+      request_id
+      request_status
+      approve_by
     }
   }
 `;
@@ -97,17 +124,33 @@ export default {
     select: {},
     mini: true,
     dialog: false,
+    index: null,
   }),
   methods: {
-    confirmation(room, msg) {
+    async confirmation(req, room, msg, i) {
+      // alert(i);
       if (confirm(`Do you want to ${msg} using Room : ${room}`)) {
+        const update = await this.$apollo
+          .mutate({
+            mutation: UPD_REQ,
+            variables: {
+              staff: this.$auth.user.sub,
+              reqId: parseInt(req),
+              status: msg,
+              room: parseInt(room),
+            },
+          })
+          .then((res) => console.log(res))
+          .finally(() => this.$router.go());
+        // console.log(update);
         this.dialog = !this.dialog;
       } else {
       }
     },
-    readMore(item) {
+    readMore(item, i) {
       this.dialog = true;
       this.select = item;
+      this.index = i;
     },
   },
   computed: {
@@ -121,5 +164,8 @@ export default {
       });
     },
   },
+  // mounted() {
+  //   console.log(this.$apollo.queries);
+  // },
 };
 </script>

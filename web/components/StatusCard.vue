@@ -3,11 +3,12 @@
     <v-card class="rounded-lg" :elevation="hover ? 4 : 0" outlined>
       <v-row no-gutters align="center">
         <v-col md="4" class="py-6 text-3xl text-center">
-          <span style="color: #e91e63">req {{ item.request_id }} </span>
+          <span style="color: #e91e63">{{ item.room.room_name }} </span>
         </v-col>
 
         <v-col md="8" class="py-6">
           <span>Date : </span>
+
           {{ item.start_datetime }} ~ {{ item.end_datetime }} <br />
 
           <span> Attendee : </span>
@@ -35,7 +36,7 @@
             class="px-10"
             rounded
             dark
-            @click="readMore(item)"
+            @click="readMore(item, index)"
           >
             More
           </v-btn>
@@ -47,7 +48,7 @@
 
 <script>
 export default {
-  props: ["item", "readMore", "staff", "approve"],
+  props: ["item", "readMore", "staff", "approve", "index"],
 };
 </script>
 
