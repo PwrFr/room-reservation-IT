@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/PwrFr/gqlgen/config"
@@ -15,12 +15,11 @@ const defaultPort = "3001"
 func getPort() string {
 	var port = os.Getenv("PORT")
 	if port == "" {
-	   port = "3001"
-	   fmt.Println("No Port In Heroku" + port)
+		port = "3001"
+		fmt.Println("No Port In Heroku" + port)
 	}
-	return ":" + port 
+	return ":" + port
 }
-
 
 func main() {
 	router := chi.NewRouter()
