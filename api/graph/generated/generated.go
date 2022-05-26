@@ -78,6 +78,7 @@ type ComplexityRoot struct {
 		CreateAccount func(childComplexity int, input model.NewAccount) int
 		CreateRequest func(childComplexity int, input model.NewRequest) int
 		CreateRoom    func(childComplexity int, input model.NewRoom) int
+		RemoveRequest func(childComplexity int, requestID int) int
 		UpdateRequest func(childComplexity int, input model.Approve) int
 	}
 
@@ -142,6 +143,7 @@ type MutationResolver interface {
 	CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error)
 	CreateRequest(ctx context.Context, input model.NewRequest) (*model.Request, error)
 	UpdateRequest(ctx context.Context, input model.Approve) (*model.ApproveOutput, error)
+	RemoveRequest(ctx context.Context, requestID int) (*string, error)
 }
 type QueryResolver interface {
 	Rooms(ctx context.Context) ([]*model.Room, error)
@@ -328,6 +330,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateRoom(childComplexity, args["input"].(model.NewRoom)), true
+
+	case "Mutation.removeRequest":
+		if e.complexity.Mutation.RemoveRequest == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeRequest_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveRequest(childComplexity, args["request_id"].(int)), true
 
 	case "Mutation.updateRequest":
 		if e.complexity.Mutation.UpdateRequest == nil {
@@ -692,6 +706,7 @@ var sources = []*ast.Source{
   createAccount(input: NewAccount!): Account!
   createRequest(input: NewRequest!): Request!
   updateRequest(input: Approve!): ApproveOutput!
+  removeRequest(request_id: Int!): String
 }
 `, BuiltIn: false},
 	{Name: "graph/schema/query.graphqls", Input: `type Query {
@@ -701,6 +716,7 @@ var sources = []*ast.Source{
   accountStudent(account_id: String!): AccountStudent!
   request: [Request!]!
   requestById(account_id: String!): [Request!]!
+ 
 }`, BuiltIn: false},
 	{Name: "graph/schema/schema.graphqls", Input: `# GraphQL schema example
 #
@@ -866,6 +882,21 @@ func (ec *executionContext) field_Mutation_createRoom_args(ctx context.Context, 
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_removeRequest_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["request_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("request_id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["request_id"] = arg0
 	return args, nil
 }
 
@@ -2062,6 +2093,58 @@ func (ec *executionContext) fieldContext_Mutation_updateRequest(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_updateRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_removeRequest(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_removeRequest(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveRequest(rctx, fc.Args["request_id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_removeRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_removeRequest_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -6240,6 +6323,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "removeRequest":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_removeRequest(ctx, field)
+			})
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

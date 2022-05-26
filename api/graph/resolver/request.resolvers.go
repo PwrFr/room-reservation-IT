@@ -46,3 +46,7 @@ func (r *queryResolver) Request(ctx context.Context) ([]*model.Request, error) {
 func (r *queryResolver) RequestByID(ctx context.Context, accountID string) ([]*model.Request, error) {
 	return r.RepoDB.GetRequestById(accountID)
 }
+
+func (m *mutationResolver) RemoveRequest(ctx context.Context, req_id int) (*string, error) {
+	return m.RepoDB.RemoveRequest(req_id)
+}

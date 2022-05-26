@@ -46,3 +46,14 @@ func (r *RepoDB) UpdateRequest(request *model.ApproveOutput) (*model.ApproveOutp
 
 	return request, nil
 }
+
+func (r *RepoDB) RemoveRequest(request_id int) (*string, error) {
+	var req *model.Request
+	_, err := r.DB.Model(req).Where("request_id = ?", request_id).Delete()
+	if err != nil {
+		fmt.Println("err", err)
+		return nil, err
+	}
+
+	return nil, nil
+}

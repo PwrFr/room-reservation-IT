@@ -3,4 +3,5 @@ type Mutation {
   createAccount(input: NewAccount!): Account!
   createRequest(input: NewRequest!): Request!
   updateRequest(input: Approve!): ApproveOutput!
+  removeRequest(request_id: Int!): String
 }
