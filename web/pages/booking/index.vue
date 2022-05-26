@@ -7,15 +7,15 @@
             <span class="hidden-sm-and-down">All</span>
           </v-btn>
 
-          <v-btn value="pending">
+          <v-btn value="Pending" color="warning" text>
             <span class="hidden-sm-and-down">Pending</span>
           </v-btn>
 
-          <v-btn value="approved">
+          <v-btn value="Approved" color="success" text>
             <span class="hidden-sm-and-down">Approved</span>
           </v-btn>
 
-          <v-btn value="rejected">
+          <v-btn value="Rejected" color="error" text>
             <span class="hidden-sm-and-down">Rejected</span>
           </v-btn>
         </v-btn-toggle>
@@ -30,7 +30,7 @@
         ></v-col>
       </v-row>
       <v-row v-else style="height: 70vh; overflow-y: scroll">
-        <v-col v-for="(item, i) in items" :key="i" md="4">
+        <v-col v-for="(item, i) in filterReq" :key="i" md="4">
           <StatusCardVue :item="item" />
         </v-col>
       </v-row>
@@ -108,6 +108,17 @@ export default {
       },
     ],
   }),
+  computed: {
+    filterReq() {
+      return this.items.filter((req) => {
+        if (this.text !== "all") {
+          return req.status.match(this.text);
+        } else {
+          return this.items;
+        }
+      });
+    },
+  },
 };
 </script>
 
