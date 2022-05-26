@@ -1,5 +1,5 @@
 import colors from "vuetify/es5/util/colors";
-
+const webpack = require("webpack");
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -20,7 +20,7 @@ export default {
       },
     ],
   },
-
+  target: "static",
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ["@/assets/css/main.css"],
 
@@ -33,15 +33,15 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     "@nuxt/postcss8",
-    "nuxt-vite",
+    // "nuxt-vite",
     "@nuxtjs/google-fonts",
     "@nuxtjs/vuetify",
   ],
-  vite: {
-    optimizeDeps: {
-      include: ["cookie"],
-    },
-  },
+  // vite: {
+  //   optimizeDeps: {
+  //     include: ["cookie"],
+  //   },
+  // },
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ["@nuxtjs/axios", "@nuxtjs/apollo", "@nuxtjs/auth-next"],
@@ -52,15 +52,25 @@ export default {
       },
     },
   },
-
+  sass: {
+    indentedSyntax: true,
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    postcss: {
-      plugins: {
-        tailwindcss: {},
-        autoprefixer: {},
-      },
-    },
+    // analyze: true,
+    plugins: [
+      new webpack.ProvidePlugin({
+        // global modules
+        $: "jquery",
+        _: "lodash",
+      }),
+    ],
+    // styleResources: {
+    //   scss: "./assets/variables.scss",
+    //   less: "./assets/*.less",
+    //   // sass: ...,
+    //   // scss: ...
+    // },
   },
   googleFonts: {
     families: {
