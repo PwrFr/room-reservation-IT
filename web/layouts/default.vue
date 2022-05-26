@@ -131,7 +131,7 @@
             </v-list-item>
             <v-list-item
               v-else
-              @click="login"
+              to="/login"
               router
               exact
               style="padding-left: 0.4rem"
@@ -192,9 +192,6 @@ export default {
     };
   },
   methods: {
-    login() {
-      this.$auth.loginWith("google");
-    },
     logout() {
       this.$auth.logout();
       this.$auth.$storage.removeLocalStorage("role");
