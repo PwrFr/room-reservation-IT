@@ -86,6 +86,7 @@ type ComplexityRoot struct {
 		AccountByID    func(childComplexity int, accountID string) int
 		AccountStudent func(childComplexity int, accountID string) int
 		Request        func(childComplexity int) int
+		RequestByID    func(childComplexity int, accountID string) int
 		Rooms          func(childComplexity int) int
 	}
 
@@ -148,6 +149,7 @@ type QueryResolver interface {
 	AccountByID(ctx context.Context, accountID string) (*model.Account, error)
 	AccountStudent(ctx context.Context, accountID string) (*model.AccountStudent, error)
 	Request(ctx context.Context) ([]*model.Request, error)
+	RequestByID(ctx context.Context, accountID string) ([]*model.Request, error)
 }
 
 type executableSchema struct {
@@ -376,6 +378,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Request(childComplexity), true
+
+	case "Query.requestById":
+		if e.complexity.Query.RequestByID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_requestById_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.RequestByID(childComplexity, args["account_id"].(string)), true
 
 	case "Query.rooms":
 		if e.complexity.Query.Rooms == nil {
@@ -686,6 +700,7 @@ var sources = []*ast.Source{
   accountById(account_id: String!): Account!
   accountStudent(account_id: String!): AccountStudent!
   request: [Request!]!
+  requestById(account_id: String!): [Request!]!
 }`, BuiltIn: false},
 	{Name: "graph/schema/schema.graphqls", Input: `# GraphQL schema example
 #
@@ -900,6 +915,21 @@ func (ec *executionContext) field_Query_accountById_args(ctx context.Context, ra
 }
 
 func (ec *executionContext) field_Query_accountStudent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["account_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("account_id"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["account_id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_requestById_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -2358,6 +2388,89 @@ func (ec *executionContext) fieldContext_Query_request(ctx context.Context, fiel
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Request", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_requestById(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_requestById(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().RequestByID(rctx, fc.Args["account_id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Request)
+	fc.Result = res
+	return ec.marshalNRequest2ᚕᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐRequestᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_requestById(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "request_id":
+				return ec.fieldContext_Request_request_id(ctx, field)
+			case "room_id":
+				return ec.fieldContext_Request_room_id(ctx, field)
+			case "request_purpose":
+				return ec.fieldContext_Request_request_purpose(ctx, field)
+			case "request_attendee":
+				return ec.fieldContext_Request_request_attendee(ctx, field)
+			case "request_status":
+				return ec.fieldContext_Request_request_status(ctx, field)
+			case "start_datetime":
+				return ec.fieldContext_Request_start_datetime(ctx, field)
+			case "end_datetime":
+				return ec.fieldContext_Request_end_datetime(ctx, field)
+			case "request_by":
+				return ec.fieldContext_Request_request_by(ctx, field)
+			case "request_datetime":
+				return ec.fieldContext_Request_request_datetime(ctx, field)
+			case "approve_by":
+				return ec.fieldContext_Request_approve_by(ctx, field)
+			case "approve_datetime":
+				return ec.fieldContext_Request_approve_datetime(ctx, field)
+			case "remark":
+				return ec.fieldContext_Request_remark(ctx, field)
+			case "room":
+				return ec.fieldContext_Request_room(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Request", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_requestById_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -6259,6 +6372,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_request(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "requestById":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_requestById(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
