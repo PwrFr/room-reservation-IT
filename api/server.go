@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+	"fmt"
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -10,6 +12,16 @@ import (
 
 const defaultPort = "3001"
 
+func getPort() string {
+	var port = os.Getenv("PORT")
+	if port == "" {
+	   port = "3001"
+	   fmt.Println("No Port In Heroku" + port)
+	}
+	return ":" + port 
+}
+
+
 func main() {
 	router := chi.NewRouter()
 
@@ -18,7 +30,7 @@ func main() {
 	router.Handle("/", playground.Handler("GraphQL Playground", "/query"))
 	router.Handle("/query", config.ServerConfig())
 
-	err := http.ListenAndServe(":3001", router)
+	err := http.ListenAndServe(getPort(), router)
 	if err != nil {
 		panic(err)
 	}
