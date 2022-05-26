@@ -30,7 +30,12 @@
       </v-list-item>
 
       <v-card-actions style="justify-content: end">
-        <v-btn color="pink" dark @click.stop="selected(room)">
+        <v-btn
+          color="pink"
+          :disabled="room.room_status !== 'Available'"
+          dark
+          @click.stop="selected(room)"
+        >
           Book
           <v-icon right>mdi-calendar-multiple-check</v-icon>
         </v-btn>
