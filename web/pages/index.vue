@@ -14,7 +14,7 @@
                 <v-skeleton-loader
                   class="m-4"
                   max-width="300"
-                  type="article, actions"
+                  type="table-heading,list-item-two-line, actions"
                 ></v-skeleton-loader>
               </v-col>
             </v-row>

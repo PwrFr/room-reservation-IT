@@ -198,7 +198,7 @@ export default {
     logout() {
       this.$auth.logout();
       this.$auth.$storage.removeLocalStorage("role");
-      location.reload();
+      this.$router.go();
     },
   },
   computed: {
