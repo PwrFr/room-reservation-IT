@@ -1,17 +1,15 @@
-scalar Time
-
 type Request {
   request_id: Int!
   room_id: Int!
   request_purpose: String!
   request_attendee: Int!
   request_status: String!
-  start_datetime: Time!
-  end_datetime: Time!
+  start_datetime: String!
+  end_datetime: String!
   request_by: String!
-  request_datetime: Time!
+  request_datetime: String!
   approve_by: String
-  approve_datetime: Time
+  approve_datetime: String
   remark: String!
 }
 
@@ -19,8 +17,24 @@ input NewRequest {
   room_id: Int!
   request_purpose: String!
   request_attendee: Int!
-  start_datetime: Time!
-  end_datetime: Time!
+  start_datetime: String!
+  end_datetime: String!
   request_by: String!
 }
 
+input Approve {
+    approve_by: String!
+    request_id: Int!
+    request_status: String!
+    approve_datetime: String
+    remark: String
+    room_id: Int
+}
+
+type ApproveOutput {
+    approve_by: String!
+    request_id: Int!
+    request_status: String!
+    approve_datetime: String
+    remark: String
+}

@@ -8,7 +8,7 @@ type NewRoom struct {
 
 type Room struct {
 	tableName    struct{}        `pg:"room"`
-	RoomID       string          `json:"room_id" pg:"room_id,pk"`
+	RoomID       int             `json:"room_id" pg:"room_id,pk"`
 	RoomName     string          `json:"room_name"`
 	RoomStatus   string          `json:"roomstatus"`
 	RoomCapacity int             `json:"room_capacity"`

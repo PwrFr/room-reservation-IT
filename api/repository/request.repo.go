@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/PwrFr/gqlgen/graph/model"
@@ -23,7 +22,17 @@ func (r *RepoDB) GetRequest() ([]*model.Request, error) {
 	if err != nil {
 		return nil, err
 	}
-	x, _ := json.Marshal(request)
-	fmt.Println(string(x))
+	// x, _ := json.Marshal(request)
+	// fmt.Println(string(x))
+	return request, nil
+}
+
+func (r *RepoDB) UpdateRequest(request *model.ApproveOutput) (*model.ApproveOutput, error) {
+	_, err := r.DB.Model(request).Where("request_id = ?", request.RequestID).Returning("request_id, request_status, approve_by, approve_datetime").Update()
+	if err != nil {
+		fmt.Println("err", err)
+		return nil, err
+	}
+
 	return request, nil
 }

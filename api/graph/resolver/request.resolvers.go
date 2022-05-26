@@ -16,10 +16,26 @@ func (m *mutationResolver) CreateRequest(ctx context.Context, input model.NewReq
 		StartDatetime:   input.StartDatetime,
 		EndDatetime:     input.EndDatetime,
 		RequestBy:       input.RequestBy,
-		RequestDatetime: time.Now(),
+		RequestDatetime: time.Now().Format("2006-01-02"),
 	}
 
 	return m.RepoDB.InsertRequest(new_req)
+}
+
+func (m *mutationResolver) UpdateRequest(ctx context.Context, input model.Approve) (*model.ApproveOutput, error) {
+	new_req := &model.ApproveOutput{
+		RequestID:       input.RequestID,
+		RequestStatus:   input.RequestStatus,
+		ApproveDatetime: time.Now().Format("2006-01-02"),
+		ApproveBy:       input.ApproveBy,
+		Remark:          input.Remark,
+	}
+
+	// if input.RequestStatus == "approved" {
+
+	// }
+
+	return m.RepoDB.UpdateRequest(new_req)
 }
 
 func (r *queryResolver) Request(ctx context.Context) ([]*model.Request, error) {
