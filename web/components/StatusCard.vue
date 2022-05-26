@@ -41,14 +41,47 @@
             More
           </v-btn>
         </v-row>
+        <v-row v-else-if="item.request_status === 'pending'" justify="center">
+          <v-btn
+            color="error"
+            class="px-10"
+            rounded
+            dark
+            @click="remove(item.request_id)"
+          >
+            Cancel
+          </v-btn>
+        </v-row>
       </v-row>
     </v-card>
   </v-hover>
 </template>
 
 <script>
+import gql from "graphql-tag";
+
+const REMOOVE_REQ = gql`
+  mutation removeRequest($id: Int!) {
+    removeRequest(request_id: $id)
+  }
+`;
 export default {
   props: ["item", "readMore", "staff", "approve", "index"],
+  methods: {
+    async remove(req) {
+      if (confirm("Are you sure to cancel this Request?")) {
+        await this.$apollo
+          .mutate({
+            mutation: REMOOVE_REQ,
+            variables: {
+              id: req,
+            },
+          })
+          .then((res) => console.log(res))
+          .finally(() => this.$router.go());
+      }
+    },
+  },
 };
 </script>
 
