@@ -61,6 +61,15 @@ type ComplexityRoot struct {
 		Student   func(childComplexity int) int
 	}
 
+	AccountWithToken struct {
+		AccountID func(childComplexity int) int
+		Email     func(childComplexity int) int
+		FirstName func(childComplexity int) int
+		LastName  func(childComplexity int) int
+		Role      func(childComplexity int) int
+		Token     func(childComplexity int) int
+	}
+
 	ApproveOutput struct {
 		ApproveBy       func(childComplexity int) int
 		ApproveDatetime func(childComplexity int) int
@@ -76,11 +85,11 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateAccount func(childComplexity int, input model.NewAccount) int
-		CreateRequest func(childComplexity int, input model.NewRequest) int
+		CreateRequest func(childComplexity int, input model.NewRequest, token *string) int
 		CreateRoom    func(childComplexity int, input model.NewRoom) int
-		RemoveRequest func(childComplexity int, requestID int) int
-		UpdateRequest func(childComplexity int, input model.Approve) int
-		UpdateRoom    func(childComplexity int, roomID int, status string) int
+		RemoveRequest func(childComplexity int, requestID int, token *string) int
+		UpdateRequest func(childComplexity int, input model.Approve, token *string) int
+		UpdateRoom    func(childComplexity int, roomID int, status string, token *string) int
 	}
 
 	Query struct {
@@ -176,11 +185,11 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateRoom(ctx context.Context, input model.NewRoom) (*model.Room, error)
-	CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error)
-	CreateRequest(ctx context.Context, input model.NewRequest) (*model.RequestOutput, error)
-	UpdateRequest(ctx context.Context, input model.Approve) (*model.ApproveOutput, error)
-	RemoveRequest(ctx context.Context, requestID int) (*string, error)
-	UpdateRoom(ctx context.Context, roomID int, status string) (*string, error)
+	CreateAccount(ctx context.Context, input model.NewAccount) (*model.AccountWithToken, error)
+	CreateRequest(ctx context.Context, input model.NewRequest, token *string) (*model.RequestOutput, error)
+	UpdateRequest(ctx context.Context, input model.Approve, token *string) (*model.ApproveOutput, error)
+	RemoveRequest(ctx context.Context, requestID int, token *string) (*string, error)
+	UpdateRoom(ctx context.Context, roomID int, status string, token *string) (*string, error)
 }
 type QueryResolver interface {
 	Rooms(ctx context.Context) ([]*model.Room, error)
@@ -285,6 +294,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AccountStudent.Student(childComplexity), true
 
+	case "AccountWithToken.account_id":
+		if e.complexity.AccountWithToken.AccountID == nil {
+			break
+		}
+
+		return e.complexity.AccountWithToken.AccountID(childComplexity), true
+
+	case "AccountWithToken.email":
+		if e.complexity.AccountWithToken.Email == nil {
+			break
+		}
+
+		return e.complexity.AccountWithToken.Email(childComplexity), true
+
+	case "AccountWithToken.first_name":
+		if e.complexity.AccountWithToken.FirstName == nil {
+			break
+		}
+
+		return e.complexity.AccountWithToken.FirstName(childComplexity), true
+
+	case "AccountWithToken.last_name":
+		if e.complexity.AccountWithToken.LastName == nil {
+			break
+		}
+
+		return e.complexity.AccountWithToken.LastName(childComplexity), true
+
+	case "AccountWithToken.role":
+		if e.complexity.AccountWithToken.Role == nil {
+			break
+		}
+
+		return e.complexity.AccountWithToken.Role(childComplexity), true
+
+	case "AccountWithToken.token":
+		if e.complexity.AccountWithToken.Token == nil {
+			break
+		}
+
+		return e.complexity.AccountWithToken.Token(childComplexity), true
+
 	case "ApproveOutput.approve_by":
 		if e.complexity.ApproveOutput.ApproveBy == nil {
 			break
@@ -356,7 +407,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateRequest(childComplexity, args["input"].(model.NewRequest)), true
+		return e.complexity.Mutation.CreateRequest(childComplexity, args["input"].(model.NewRequest), args["token"].(*string)), true
 
 	case "Mutation.createRoom":
 		if e.complexity.Mutation.CreateRoom == nil {
@@ -380,7 +431,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RemoveRequest(childComplexity, args["request_id"].(int)), true
+		return e.complexity.Mutation.RemoveRequest(childComplexity, args["request_id"].(int), args["token"].(*string)), true
 
 	case "Mutation.updateRequest":
 		if e.complexity.Mutation.UpdateRequest == nil {
@@ -392,7 +443,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateRequest(childComplexity, args["input"].(model.Approve)), true
+		return e.complexity.Mutation.UpdateRequest(childComplexity, args["input"].(model.Approve), args["token"].(*string)), true
 
 	case "Mutation.updateRoom":
 		if e.complexity.Mutation.UpdateRoom == nil {
@@ -404,7 +455,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateRoom(childComplexity, args["room_id"].(int), args["status"].(string)), true
+		return e.complexity.Mutation.UpdateRoom(childComplexity, args["room_id"].(int), args["status"].(string), args["token"].(*string)), true
 
 	case "Query.account":
 		if e.complexity.Query.Account == nil {
@@ -957,11 +1008,11 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 var sources = []*ast.Source{
 	{Name: "graph/schema/mutation.graphqls", Input: `type Mutation {
   createRoom(input: NewRoom!): Room!
-  createAccount(input: NewAccount!): Account!
-  createRequest(input: NewRequest!): RequestOutput!
-  updateRequest(input: Approve!): ApproveOutput!
-  removeRequest(request_id: Int!): String
-  updateRoom(room_id: Int!, status: String!): String
+  createAccount(input: NewAccount!): AccountWithToken!
+  createRequest(input: NewRequest!, token: String): RequestOutput!
+  updateRequest(input: Approve!, token: String): ApproveOutput!
+  removeRequest(request_id: Int!, token: String): String
+  updateRoom(room_id: Int!, status: String!, token: String): String
 }
 `, BuiltIn: false},
 	{Name: "graph/schema/query.graphqls", Input: `type Query {
@@ -988,6 +1039,15 @@ schema {
 	last_name: String!
 	role: String! 
 	email: String!
+}
+
+type AccountWithToken {
+  	account_id: String!
+	first_name: String!
+	last_name: String!
+	role: String! 
+	email: String!
+	token: String
 }
 
 type AccountStudent {
@@ -1158,6 +1218,15 @@ func (ec *executionContext) field_Mutation_createRequest_args(ctx context.Contex
 		}
 	}
 	args["input"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["token"] = arg1
 	return args, nil
 }
 
@@ -1188,6 +1257,15 @@ func (ec *executionContext) field_Mutation_removeRequest_args(ctx context.Contex
 		}
 	}
 	args["request_id"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["token"] = arg1
 	return args, nil
 }
 
@@ -1203,6 +1281,15 @@ func (ec *executionContext) field_Mutation_updateRequest_args(ctx context.Contex
 		}
 	}
 	args["input"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["token"] = arg1
 	return args, nil
 }
 
@@ -1227,6 +1314,15 @@ func (ec *executionContext) field_Mutation_updateRoom_args(ctx context.Context, 
 		}
 	}
 	args["status"] = arg1
+	var arg2 *string
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["token"] = arg2
 	return args, nil
 }
 
@@ -1824,6 +1920,267 @@ func (ec *executionContext) fieldContext_AccountStudent_student(ctx context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _AccountWithToken_account_id(ctx context.Context, field graphql.CollectedField, obj *model.AccountWithToken) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AccountWithToken_account_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccountID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AccountWithToken_account_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AccountWithToken",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AccountWithToken_first_name(ctx context.Context, field graphql.CollectedField, obj *model.AccountWithToken) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AccountWithToken_first_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FirstName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AccountWithToken_first_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AccountWithToken",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AccountWithToken_last_name(ctx context.Context, field graphql.CollectedField, obj *model.AccountWithToken) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AccountWithToken_last_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LastName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AccountWithToken_last_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AccountWithToken",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AccountWithToken_role(ctx context.Context, field graphql.CollectedField, obj *model.AccountWithToken) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AccountWithToken_role(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Role, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AccountWithToken_role(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AccountWithToken",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AccountWithToken_email(ctx context.Context, field graphql.CollectedField, obj *model.AccountWithToken) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AccountWithToken_email(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Email, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AccountWithToken_email(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AccountWithToken",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AccountWithToken_token(ctx context.Context, field graphql.CollectedField, obj *model.AccountWithToken) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AccountWithToken_token(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Token, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AccountWithToken_token(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AccountWithToken",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ApproveOutput_approve_by(ctx context.Context, field graphql.CollectedField, obj *model.ApproveOutput) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ApproveOutput_approve_by(ctx, field)
 	if err != nil {
@@ -2223,9 +2580,9 @@ func (ec *executionContext) _Mutation_createAccount(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Account)
+	res := resTmp.(*model.AccountWithToken)
 	fc.Result = res
-	return ec.marshalNAccount2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐAccount(ctx, field.Selections, res)
+	return ec.marshalNAccountWithToken2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐAccountWithToken(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2237,17 +2594,19 @@ func (ec *executionContext) fieldContext_Mutation_createAccount(ctx context.Cont
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "account_id":
-				return ec.fieldContext_Account_account_id(ctx, field)
+				return ec.fieldContext_AccountWithToken_account_id(ctx, field)
 			case "first_name":
-				return ec.fieldContext_Account_first_name(ctx, field)
+				return ec.fieldContext_AccountWithToken_first_name(ctx, field)
 			case "last_name":
-				return ec.fieldContext_Account_last_name(ctx, field)
+				return ec.fieldContext_AccountWithToken_last_name(ctx, field)
 			case "role":
-				return ec.fieldContext_Account_role(ctx, field)
+				return ec.fieldContext_AccountWithToken_role(ctx, field)
 			case "email":
-				return ec.fieldContext_Account_email(ctx, field)
+				return ec.fieldContext_AccountWithToken_email(ctx, field)
+			case "token":
+				return ec.fieldContext_AccountWithToken_token(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Account", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type AccountWithToken", field.Name)
 		},
 	}
 	defer func() {
@@ -2278,7 +2637,7 @@ func (ec *executionContext) _Mutation_createRequest(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateRequest(rctx, fc.Args["input"].(model.NewRequest))
+		return ec.resolvers.Mutation().CreateRequest(rctx, fc.Args["input"].(model.NewRequest), fc.Args["token"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2359,7 +2718,7 @@ func (ec *executionContext) _Mutation_updateRequest(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateRequest(rctx, fc.Args["input"].(model.Approve))
+		return ec.resolvers.Mutation().UpdateRequest(rctx, fc.Args["input"].(model.Approve), fc.Args["token"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2426,7 +2785,7 @@ func (ec *executionContext) _Mutation_removeRequest(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RemoveRequest(rctx, fc.Args["request_id"].(int))
+		return ec.resolvers.Mutation().RemoveRequest(rctx, fc.Args["request_id"].(int), fc.Args["token"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2478,7 +2837,7 @@ func (ec *executionContext) _Mutation_updateRoom(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateRoom(rctx, fc.Args["room_id"].(int), fc.Args["status"].(string))
+		return ec.resolvers.Mutation().UpdateRoom(rctx, fc.Args["room_id"].(int), fc.Args["status"].(string), fc.Args["token"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7848,6 +8207,66 @@ func (ec *executionContext) _AccountStudent(ctx context.Context, sel ast.Selecti
 	return out
 }
 
+var accountWithTokenImplementors = []string{"AccountWithToken"}
+
+func (ec *executionContext) _AccountWithToken(ctx context.Context, sel ast.SelectionSet, obj *model.AccountWithToken) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, accountWithTokenImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AccountWithToken")
+		case "account_id":
+
+			out.Values[i] = ec._AccountWithToken_account_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "first_name":
+
+			out.Values[i] = ec._AccountWithToken_first_name(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "last_name":
+
+			out.Values[i] = ec._AccountWithToken_last_name(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "role":
+
+			out.Values[i] = ec._AccountWithToken_role(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "email":
+
+			out.Values[i] = ec._AccountWithToken_email(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "token":
+
+			out.Values[i] = ec._AccountWithToken_token(ctx, field, obj)
+
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var approveOutputImplementors = []string{"ApproveOutput"}
 
 func (ec *executionContext) _ApproveOutput(ctx context.Context, sel ast.SelectionSet, obj *model.ApproveOutput) graphql.Marshaler {
@@ -9112,6 +9531,20 @@ func (ec *executionContext) marshalNAccountStudent2ᚖgithubᚗcomᚋPwrFrᚋgql
 		return graphql.Null
 	}
 	return ec._AccountStudent(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAccountWithToken2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐAccountWithToken(ctx context.Context, sel ast.SelectionSet, v model.AccountWithToken) graphql.Marshaler {
+	return ec._AccountWithToken(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAccountWithToken2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐAccountWithToken(ctx context.Context, sel ast.SelectionSet, v *model.AccountWithToken) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AccountWithToken(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNApprove2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐApprove(ctx context.Context, v interface{}) (model.Approve, error) {

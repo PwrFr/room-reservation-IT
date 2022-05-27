@@ -15,23 +15,23 @@ func (r *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) 
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error) {
+func (r *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*model.AccountWithToken, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateRequest(ctx context.Context, input model.NewRequest) (*model.RequestOutput, error) {
+func (r *mutationResolver) CreateRequest(ctx context.Context, input model.NewRequest, token *string) (*model.RequestOutput, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateRequest(ctx context.Context, input model.Approve) (*model.ApproveOutput, error) {
+func (r *mutationResolver) UpdateRequest(ctx context.Context, input model.Approve, token *string) (*model.ApproveOutput, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) RemoveRequest(ctx context.Context, requestID int) (*string, error) {
+func (r *mutationResolver) RemoveRequest(ctx context.Context, requestID int, token *string) (*string, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) UpdateRoom(ctx context.Context, roomID int, status string) (*string, error) {
+func (r *mutationResolver) UpdateRoom(ctx context.Context, roomID int, status string, token *string) (*string, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

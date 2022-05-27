@@ -2,8 +2,10 @@ package resolver
 
 import (
 	"context"
+	"errors"
 
 	"github.com/PwrFr/gqlgen/graph/model"
+	"github.com/PwrFr/gqlgen/graph/resolver/middleware"
 )
 
 func (m *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) (*model.Room, error) {
@@ -25,7 +27,11 @@ func (r *queryResolver) RoomWithRequest(ctx context.Context) ([]*model.RoomWithR
 	return r.RepoDB.GetRoomWithRequest()
 }
 
-func (m *mutationResolver) UpdateRoom(ctx context.Context, room_id int, status string) (*string, error) {
+func (m *mutationResolver) UpdateRoom(ctx context.Context, room_id int, status string, token *string) (*string, error) {
+	if auth := middleware.RoleValid("staff", token); !auth {
+		return nil, errors.New("Forbidden lol")
+	}
+
 	err := m.RepoDB.UpdateRoom(room_id, status)
 	return nil, err
 }

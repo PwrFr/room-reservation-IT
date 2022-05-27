@@ -6,6 +6,15 @@ type Account {
 	email: String!
 }
 
+type AccountWithToken {
+  	account_id: String!
+	first_name: String!
+	last_name: String!
+	role: String! 
+	email: String!
+	token: String
+}
+
 type AccountStudent {
   	account_id: String!
 	first_name: String!

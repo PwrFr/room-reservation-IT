@@ -24,6 +24,11 @@ func main() {
 		port = defaultPort
 	}
 
+	// x, _ := middleware.GenerateJwtToken("student")
+	// fmt.Println(x)
+
+	// x := middleware.RoleValid("student", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTM3NTQyNzMsInN1YiI6InN0dWRlbnQifQ.U-TRxnKR_lROvO_1bglpCA4K05NsrDS64sJ8cn0qSd4")
+
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		panic(err)
