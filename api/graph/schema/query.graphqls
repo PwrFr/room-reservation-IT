@@ -6,4 +6,5 @@ type Query {
   request: [Request!]!
   requestById(account_id: String!): [Request!]!
   ipwat: String
+  updateRoom(room_id: Int!, status: String!): String
 }

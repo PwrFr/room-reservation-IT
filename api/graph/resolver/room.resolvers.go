@@ -20,3 +20,8 @@ func (m *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) 
 func (r *queryResolver) Rooms(ctx context.Context) ([]*model.Room, error) {
 	return r.RepoDB.GetRoom()
 }
+
+func (r *queryResolver) UpdateRoom(ctx context.Context, room_id int, status string) (*string, error) {
+	err := r.RepoDB.UpdateRoom(room_id, status)
+	return nil, err
+}

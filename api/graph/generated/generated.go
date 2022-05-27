@@ -90,6 +90,7 @@ type ComplexityRoot struct {
 		Request        func(childComplexity int) int
 		RequestByID    func(childComplexity int, accountID string) int
 		Rooms          func(childComplexity int) int
+		UpdateRoom     func(childComplexity int, roomID int, status string) int
 	}
 
 	Request struct {
@@ -176,6 +177,7 @@ type QueryResolver interface {
 	Request(ctx context.Context) ([]*model.Request, error)
 	RequestByID(ctx context.Context, accountID string) ([]*model.Request, error)
 	Ipwat(ctx context.Context) (*string, error)
+	UpdateRoom(ctx context.Context, roomID int, status string) (*string, error)
 }
 
 type executableSchema struct {
@@ -442,6 +444,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Rooms(childComplexity), true
+
+	case "Query.updateRoom":
+		if e.complexity.Query.UpdateRoom == nil {
+			break
+		}
+
+		args, err := ec.field_Query_updateRoom_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UpdateRoom(childComplexity, args["room_id"].(int), args["status"].(string)), true
 
 	case "Request.approve_by":
 		if e.complexity.Request.ApproveBy == nil {
@@ -881,6 +895,7 @@ var sources = []*ast.Source{
   request: [Request!]!
   requestById(account_id: String!): [Request!]!
   ipwat: String
+  updateRoom(room_id: Int!, status: String!): String
 }`, BuiltIn: false},
 	{Name: "graph/schema/schema.graphqls", Input: `# GraphQL schema example
 #
@@ -1159,6 +1174,30 @@ func (ec *executionContext) field_Query_requestById_args(ctx context.Context, ra
 		}
 	}
 	args["account_id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_updateRoom_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["room_id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("room_id"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["room_id"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["status"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("status"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg1
 	return args, nil
 }
 
@@ -2808,6 +2847,58 @@ func (ec *executionContext) fieldContext_Query_ipwat(ctx context.Context, field 
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_updateRoom(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_updateRoom(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UpdateRoom(rctx, fc.Args["room_id"].(int), fc.Args["status"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_updateRoom(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_updateRoom_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -7548,6 +7639,26 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_ipwat(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "updateRoom":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_updateRoom(ctx, field)
 				return res
 			}
 

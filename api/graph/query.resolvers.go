@@ -39,6 +39,10 @@ func (r *queryResolver) Ipwat(ctx context.Context) (*string, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *queryResolver) UpdateRoom(ctx context.Context, roomID int, status string) (*string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
