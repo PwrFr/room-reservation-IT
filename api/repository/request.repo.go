@@ -70,7 +70,7 @@ func (r *RepoDB) GetRequestById(input string) ([]*model.Request, error) {
 
 	r.room_name, r.room_status, r.room_capacity  
 	FROM request AS req 
-	left join account AS a on req.approve_by = a.account_id 
+	 join account AS a on req.approve_by = a.account_id 
 	join room AS r on r.room_id = req.room_id 
 	WHERE req.request_by = ?
 	ORDER BY req.request_id

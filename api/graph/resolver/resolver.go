@@ -32,5 +32,6 @@ func Env(val string) string {
 
 func (r *queryResolver) Ipwat(ctx context.Context) (*string, error) {
 	ip := Env("FRONTEND_IP")
-	return &ip, nil
+	x := ip + ":  1"
+	return &x, nil
 }
