@@ -29,7 +29,10 @@
         ></v-col>
       </v-row>
 
-      <v-row v-else style="height: 70vh; overflow-y: scroll">
+      <v-row
+        v-if="!$apolloData.loading"
+        style="height: 70vh; overflow-y: scroll"
+      >
         <div style="display: none">
           {{ request }}
         </div>
