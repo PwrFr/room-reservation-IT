@@ -66,11 +66,14 @@
               </v-col>
             </v-row>
 
-            <v-row v-else-if="$apolloData.data.rooms === undefined">
+            <!-- <v-row v-else-if="$apolloData.data.rooms === undefined">
               No Rooms
-            </v-row>
+            </v-row> -->
 
             <v-row v-else>
+              <div style="display: none">
+                {{ rooms }}
+              </div>
               <v-col cols="4" v-for="(room, i) in filteredRoom" :key="i">
                 <RoomCardVue :room="room" :selected="selected" :check="check" />
               </v-col>
@@ -180,11 +183,12 @@ export default {
     name: "",
     capacity: null,
     status: "",
+    allRoom: [],
   }),
   apollo: {
-    rooms: {
-      query: ALL_ROOMS,
-    },
+    // rooms: {
+    //   query: ALL_ROOMS,
+    // },
   },
   methods: {
     selected(room) {
@@ -237,6 +241,17 @@ export default {
     // },
   },
   computed: {
+    async rooms() {
+      // console.log(this.$auth.user.sub);
+
+      const res = await this.$apollo.query({
+        query: ALL_ROOMS,
+      });
+      this.allRoom = res.data.rooms;
+      // console.log(this.items);
+
+      return res.data.rooms;
+    },
     detail() {
       return {
         room: this.select.room_name,
@@ -246,7 +261,7 @@ export default {
       };
     },
     filteredRoom() {
-      return this.$apolloData.data.rooms.filter((room) => {
+      return this.allRoom.filter((room) => {
         if (this.status !== "all") {
           if (this.name && this.capacity) {
             return (
