@@ -145,8 +145,8 @@ export default {
               room: parseInt(room),
             },
           })
-          .then((res) => console.log(res));
-        // .finally(() => this.$router.go());
+          .then((res) => console.log(res))
+          .finally(() => this.$router.go("/"));
         // console.log(update);
         this.dialog = !this.dialog;
       } else {
