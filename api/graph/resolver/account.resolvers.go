@@ -22,15 +22,21 @@ func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 		return acc, nil
 
 	}
+
+	_, err := m.RepoDB.InsertAccount(new_acc)
+	if err != nil {
+		return nil, err
+	}
+
 	if new_acc.Email[9:] == "it.kmitl.ac.th" {
-		fmt.Println("in")
 		_, err := m.RepoDB.InsertStudent(new_acc.AccountID, new_acc.Email)
 		if err != nil {
+			fmt.Println("std_err")
 			return nil, err
 		}
 	}
 
-	return m.RepoDB.InsertAccount(new_acc)
+	return new_acc, nil
 }
 
 func (r *queryResolver) Account(ctx context.Context) ([]*model.Account, error) {
