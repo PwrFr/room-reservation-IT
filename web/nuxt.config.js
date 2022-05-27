@@ -48,7 +48,7 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: "https://room-za.herokuapp.com/query",
+        httpEndpoint: "https://room-it-kub.herokuapp.com/query",
       },
     },
   },

@@ -1,9 +1,7 @@
 <template>
   <v-app class="my-4 mx-4 rounded-3xl">
     <div
-      v-if="
-        $auth.loggedIn && $auth.$storage.getLocalStorage('role') === 'staff'
-      "
+      v-if="$auth.user && $auth.$storage.getLocalStorage('role') === 'staff'"
     >
       <v-container>
         <v-col cols="12" class="py-10">
@@ -75,15 +73,14 @@ const REQ_ROOMS = gql`
     request {
       request_id
       room_id
-      room {
-        room_name
-      }
+      room_name
       request_purpose
       request_attendee
       request_status
       start_datetime
       end_datetime
       request_by
+      email
     }
   }
 `;
@@ -120,7 +117,7 @@ export default {
     },
   },
   data: () => ({
-    text: "pending",
+    text: "all",
     select: {},
     mini: true,
     dialog: false,

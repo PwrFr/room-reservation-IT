@@ -1,6 +1,6 @@
 <template>
   <v-app class="my-4 mx-4 rounded-3xl">
-    <v-container v-if="$auth.loggedIn">
+    <v-container v-if="$auth.user">
       <v-col cols="12" class="py-10">
         <v-btn-toggle v-model="text" mandatory group>
           <v-btn value="all">
@@ -52,10 +52,7 @@ const REQ_ROOMS_BY_ID = gql`
   query requestById($id: String!) {
     requestById(account_id: $id) {
       request_id
-      room {
-        room_id
-        room_name
-      }
+      room_name
       request_purpose
       request_attendee
       request_status
@@ -77,7 +74,7 @@ export default {
     // },
   },
   data: () => ({
-    text: "pending",
+    text: "all",
     items: [],
   }),
   computed: {
@@ -91,7 +88,7 @@ export default {
       });
     },
     async request() {
-      console.log(this.$auth.user.sub);
+      // console.log(this.$auth.user.sub);
 
       const res = await this.$apollo.query({
         query: REQ_ROOMS_BY_ID,
@@ -100,7 +97,7 @@ export default {
         },
       });
       this.items = res.data.requestById;
-      console.log(this.items);
+      // console.log(this.items);
 
       return res.data.requestById;
     },

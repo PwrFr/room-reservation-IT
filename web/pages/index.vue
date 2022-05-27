@@ -195,17 +195,19 @@ export default {
     //PetitionCardVue
     async reserve(p, a, d) {
       if (confirm("Are you sure?")) {
-        await this.$apollo.mutate({
-          mutation: RESERVATION,
-          variables: {
-            id: this.select.room_id,
-            purpose: p,
-            atten: a,
-            sDate: d[0],
-            eDate: d.length == 2 ? d[1] : d[0],
-            user: this.$auth.user.sub,
-          },
-        });
+        await this.$apollo
+          .mutate({
+            mutation: RESERVATION,
+            variables: {
+              id: this.select.room_id,
+              purpose: p,
+              atten: a,
+              sDate: d[0],
+              eDate: d.length == 2 ? d[1] : d[0],
+              user: this.$auth.user.sub,
+            },
+          })
+          .then((res) => console.log(res));
         (this.dialog = false), (this.mini = !this.mini);
         this.$refs.ReserveFormVue.resetForm();
       }
