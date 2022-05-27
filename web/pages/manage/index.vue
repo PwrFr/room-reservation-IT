@@ -230,7 +230,6 @@ export default {
             token: this.$auth.$storage.getLocalStorage("token"),
           },
         }).finally(() => this.$router.replace({ path: "/" }));
-        console.log(id, this.status);
         this.mini = true;
       }
     },

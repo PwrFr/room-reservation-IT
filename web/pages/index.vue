@@ -214,7 +214,7 @@ export default {
               token: this.$auth.$storage.getLocalStorage("token"),
             },
           })
-          .then((res) => console.log(res));
+          .then((res) => console.log());
         (this.dialog = false), (this.mini = !this.mini);
         this.$refs.ReserveFormVue.resetForm();
       }

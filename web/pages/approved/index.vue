@@ -148,7 +148,6 @@ export default {
               token: this.$auth.$storage.getLocalStorage("token"),
             },
           })
-          .then((res) => console.log(res))
           .finally(() => this.$router.replace({ path: "/" }));
         // console.log(update);
         this.dialog = !this.dialog;

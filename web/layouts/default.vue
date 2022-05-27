@@ -228,7 +228,6 @@ export default {
   },
   computed: {
     async user() {
-      console.log(this.$auth);
       const role = await this.$apollo.mutate({
         mutation: GET_ROLE,
         variables: {
