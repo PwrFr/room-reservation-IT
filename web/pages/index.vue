@@ -71,9 +71,9 @@
             </v-row> -->
 
             <v-row v-else>
-              <div style="display: none">
+              <!-- <div style="display: none">
                 {{ rooms }}
-              </div>
+              </div> -->
               <v-col cols="4" v-for="(room, i) in filteredRoom" :key="i">
                 <RoomCardVue :room="room" :selected="selected" :check="check" />
               </v-col>
@@ -186,7 +186,7 @@ export default {
     allRoom: [],
   }),
   apollo: {
-    rasds: {
+    rooms: {
       query: ALL_ROOMS,
     },
   },
@@ -241,17 +241,17 @@ export default {
     // },
   },
   computed: {
-    async rooms() {
-      // console.log(this.$auth.user.sub);
+    // async rooms() {
+    //   // console.log(this.$auth.user.sub);
 
-      const res = await this.$apollo.query({
-        query: ALL_ROOMS,
-      });
-      this.allRoom = res.data.rooms;
-      // console.log(this.items);
+    //   const res = await this.$apollo.query({
+    //     query: ALL_ROOMS,
+    //   });
+    //   this.allRoom = res.data.rooms;
+    //   // console.log(this.items);
 
-      return res.data.rooms;
-    },
+    //   return res.data.rooms;
+    // },
     detail() {
       return {
         room: this.select.room_name,
@@ -261,7 +261,7 @@ export default {
       };
     },
     filteredRoom() {
-      return this.allRoom.filter((room) => {
+      return this.$apolloData.data.rooms.filter((room) => {
         if (this.status !== "all") {
           if (this.name && this.capacity) {
             return (
