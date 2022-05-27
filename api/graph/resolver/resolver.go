@@ -3,9 +3,9 @@ package resolver
 //go:generate go run -mod=mod github.com/99designs/gqlgen generate
 import (
 	"context"
-	"os"
 
 	repo "github.com/PwrFr/gqlgen/repository"
+	"github.com/joho/godotenv"
 )
 
 // This file will not be regenerated automatically.
@@ -18,7 +18,19 @@ type Resolver struct {
 	// account []*model.Account
 }
 
+func InitEnv() map[string]string {
+	_ = godotenv.Load()
+	env, _ := godotenv.Read()
+
+	return env
+}
+
+//calling env
+func Env(val string) string {
+	return InitEnv()[val]
+}
+
 func (r *queryResolver) Ipwat(ctx context.Context) (*string, error) {
-	ip := os.Getenv("FRONTEND_HOST")
+	ip := Env("FRONTEND_IP")
 	return &ip, nil
 }
