@@ -114,6 +114,21 @@ type ComplexityRoot struct {
 		Year            func(childComplexity int) int
 	}
 
+	RequestOutput struct {
+		ApproveBy       func(childComplexity int) int
+		ApproveDatetime func(childComplexity int) int
+		EndDatetime     func(childComplexity int) int
+		Remark          func(childComplexity int) int
+		RequestAttendee func(childComplexity int) int
+		RequestBy       func(childComplexity int) int
+		RequestDatetime func(childComplexity int) int
+		RequestID       func(childComplexity int) int
+		RequestPurpose  func(childComplexity int) int
+		RequestStatus   func(childComplexity int) int
+		RoomID          func(childComplexity int) int
+		StartDatetime   func(childComplexity int) int
+	}
+
 	Room struct {
 		RoomCapacity func(childComplexity int) int
 		RoomFacility func(childComplexity int) int
@@ -148,7 +163,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateRoom(ctx context.Context, input model.NewRoom) (*model.Room, error)
 	CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error)
-	CreateRequest(ctx context.Context, input model.NewRequest) (*model.Request, error)
+	CreateRequest(ctx context.Context, input model.NewRequest) (*model.RequestOutput, error)
 	UpdateRequest(ctx context.Context, input model.Approve) (*model.ApproveOutput, error)
 	RemoveRequest(ctx context.Context, requestID int) (*string, error)
 }
@@ -559,6 +574,90 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Request.Year(childComplexity), true
 
+	case "RequestOutput.approve_by":
+		if e.complexity.RequestOutput.ApproveBy == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.ApproveBy(childComplexity), true
+
+	case "RequestOutput.approve_datetime":
+		if e.complexity.RequestOutput.ApproveDatetime == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.ApproveDatetime(childComplexity), true
+
+	case "RequestOutput.end_datetime":
+		if e.complexity.RequestOutput.EndDatetime == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.EndDatetime(childComplexity), true
+
+	case "RequestOutput.remark":
+		if e.complexity.RequestOutput.Remark == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.Remark(childComplexity), true
+
+	case "RequestOutput.request_attendee":
+		if e.complexity.RequestOutput.RequestAttendee == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.RequestAttendee(childComplexity), true
+
+	case "RequestOutput.request_by":
+		if e.complexity.RequestOutput.RequestBy == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.RequestBy(childComplexity), true
+
+	case "RequestOutput.request_datetime":
+		if e.complexity.RequestOutput.RequestDatetime == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.RequestDatetime(childComplexity), true
+
+	case "RequestOutput.request_id":
+		if e.complexity.RequestOutput.RequestID == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.RequestID(childComplexity), true
+
+	case "RequestOutput.request_purpose":
+		if e.complexity.RequestOutput.RequestPurpose == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.RequestPurpose(childComplexity), true
+
+	case "RequestOutput.request_status":
+		if e.complexity.RequestOutput.RequestStatus == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.RequestStatus(childComplexity), true
+
+	case "RequestOutput.room_id":
+		if e.complexity.RequestOutput.RoomID == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.RoomID(childComplexity), true
+
+	case "RequestOutput.start_datetime":
+		if e.complexity.RequestOutput.StartDatetime == nil {
+			break
+		}
+
+		return e.complexity.RequestOutput.StartDatetime(childComplexity), true
+
 	case "Room.room_capacity":
 		if e.complexity.Room.RoomCapacity == nil {
 			break
@@ -760,7 +859,7 @@ var sources = []*ast.Source{
 	{Name: "graph/schema/mutation.graphqls", Input: `type Mutation {
   createRoom(input: NewRoom!): Room!
   createAccount(input: NewAccount!): Account!
-  createRequest(input: NewRequest!): Request!
+  createRequest(input: NewRequest!): RequestOutput!
   updateRequest(input: Approve!): ApproveOutput!
   removeRequest(request_id: Int!): String
 }
@@ -812,22 +911,20 @@ input NewAccount {
 	last_name: String!
 	email: String!
 }`, BuiltIn: false},
-	{Name: "graph/schema/types/request.graphqls", Input: `# type Request {
-#   request_id: Int!
-#   room_id: Int!
-#   request_purpose: String!
-#   request_attendee: Int!
-#   request_status: String!
-#   start_datetime: String!
-#   end_datetime: String!
-#   request_by: String!
-#   request_datetime: String!
-#   approve_by: String
-#   approve_datetime: String
-#   remark: String!
-#   room: Room!
-#   student: Student!
-# }
+	{Name: "graph/schema/types/request.graphqls", Input: `type RequestOutput {
+  request_id: Int!
+  room_id: Int!
+  request_purpose: String!
+  request_attendee: Int!
+  request_status: String!
+  start_datetime: String!
+  end_datetime: String!
+  request_by: String!
+  request_datetime: String!
+  approve_by: String
+  approve_datetime: String
+  remark: String!
+}
 
 type Request {
   request_id: Int!
@@ -2056,9 +2153,9 @@ func (ec *executionContext) _Mutation_createRequest(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Request)
+	res := resTmp.(*model.RequestOutput)
 	fc.Result = res
-	return ec.marshalNRequest2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐRequest(ctx, field.Selections, res)
+	return ec.marshalNRequestOutput2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐRequestOutput(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createRequest(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2070,47 +2167,31 @@ func (ec *executionContext) fieldContext_Mutation_createRequest(ctx context.Cont
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "request_id":
-				return ec.fieldContext_Request_request_id(ctx, field)
+				return ec.fieldContext_RequestOutput_request_id(ctx, field)
 			case "room_id":
-				return ec.fieldContext_Request_room_id(ctx, field)
+				return ec.fieldContext_RequestOutput_room_id(ctx, field)
 			case "request_purpose":
-				return ec.fieldContext_Request_request_purpose(ctx, field)
+				return ec.fieldContext_RequestOutput_request_purpose(ctx, field)
 			case "request_attendee":
-				return ec.fieldContext_Request_request_attendee(ctx, field)
+				return ec.fieldContext_RequestOutput_request_attendee(ctx, field)
 			case "request_status":
-				return ec.fieldContext_Request_request_status(ctx, field)
+				return ec.fieldContext_RequestOutput_request_status(ctx, field)
 			case "start_datetime":
-				return ec.fieldContext_Request_start_datetime(ctx, field)
+				return ec.fieldContext_RequestOutput_start_datetime(ctx, field)
 			case "end_datetime":
-				return ec.fieldContext_Request_end_datetime(ctx, field)
+				return ec.fieldContext_RequestOutput_end_datetime(ctx, field)
 			case "request_by":
-				return ec.fieldContext_Request_request_by(ctx, field)
+				return ec.fieldContext_RequestOutput_request_by(ctx, field)
 			case "request_datetime":
-				return ec.fieldContext_Request_request_datetime(ctx, field)
+				return ec.fieldContext_RequestOutput_request_datetime(ctx, field)
 			case "approve_by":
-				return ec.fieldContext_Request_approve_by(ctx, field)
+				return ec.fieldContext_RequestOutput_approve_by(ctx, field)
 			case "approve_datetime":
-				return ec.fieldContext_Request_approve_datetime(ctx, field)
+				return ec.fieldContext_RequestOutput_approve_datetime(ctx, field)
 			case "remark":
-				return ec.fieldContext_Request_remark(ctx, field)
-			case "student_id":
-				return ec.fieldContext_Request_student_id(ctx, field)
-			case "year":
-				return ec.fieldContext_Request_year(ctx, field)
-			case "first_name":
-				return ec.fieldContext_Request_first_name(ctx, field)
-			case "last_name":
-				return ec.fieldContext_Request_last_name(ctx, field)
-			case "email":
-				return ec.fieldContext_Request_email(ctx, field)
-			case "room_name":
-				return ec.fieldContext_Request_room_name(ctx, field)
-			case "room_status":
-				return ec.fieldContext_Request_room_status(ctx, field)
-			case "room_capacity":
-				return ec.fieldContext_Request_room_capacity(ctx, field)
+				return ec.fieldContext_RequestOutput_remark(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Request", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type RequestOutput", field.Name)
 		},
 	}
 	defer func() {
@@ -3655,6 +3736,528 @@ func (ec *executionContext) fieldContext_Request_room_capacity(ctx context.Conte
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_request_id(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_request_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_request_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_room_id(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_room_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RoomID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_room_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_request_purpose(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_request_purpose(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestPurpose, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_request_purpose(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_request_attendee(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_request_attendee(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestAttendee, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_request_attendee(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_request_status(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_request_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestStatus, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_request_status(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_start_datetime(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_start_datetime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartDatetime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_start_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_end_datetime(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_end_datetime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EndDatetime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_end_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_request_by(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_request_by(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_request_by(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_request_datetime(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_request_datetime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RequestDatetime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_request_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_approve_by(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_approve_by(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ApproveBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_approve_by(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_approve_datetime(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_approve_datetime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ApproveDatetime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_approve_datetime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RequestOutput_remark(ctx context.Context, field graphql.CollectedField, obj *model.RequestOutput) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RequestOutput_remark(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Remark, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RequestOutput_remark(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RequestOutput",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7042,6 +7645,105 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var requestOutputImplementors = []string{"RequestOutput"}
+
+func (ec *executionContext) _RequestOutput(ctx context.Context, sel ast.SelectionSet, obj *model.RequestOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, requestOutputImplementors)
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RequestOutput")
+		case "request_id":
+
+			out.Values[i] = ec._RequestOutput_request_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "room_id":
+
+			out.Values[i] = ec._RequestOutput_room_id(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "request_purpose":
+
+			out.Values[i] = ec._RequestOutput_request_purpose(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "request_attendee":
+
+			out.Values[i] = ec._RequestOutput_request_attendee(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "request_status":
+
+			out.Values[i] = ec._RequestOutput_request_status(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "start_datetime":
+
+			out.Values[i] = ec._RequestOutput_start_datetime(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "end_datetime":
+
+			out.Values[i] = ec._RequestOutput_end_datetime(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "request_by":
+
+			out.Values[i] = ec._RequestOutput_request_by(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "request_datetime":
+
+			out.Values[i] = ec._RequestOutput_request_datetime(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "approve_by":
+
+			out.Values[i] = ec._RequestOutput_approve_by(ctx, field, obj)
+
+		case "approve_datetime":
+
+			out.Values[i] = ec._RequestOutput_approve_datetime(ctx, field, obj)
+
+		case "remark":
+
+			out.Values[i] = ec._RequestOutput_remark(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var roomImplementors = []string{"Room"}
 
 func (ec *executionContext) _Room(ctx context.Context, sel ast.SelectionSet, obj *model.Room) graphql.Marshaler {
@@ -7704,10 +8406,6 @@ func (ec *executionContext) unmarshalNNewRoom2githubᚗcomᚋPwrFrᚋgqlgenᚋgr
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNRequest2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐRequest(ctx context.Context, sel ast.SelectionSet, v model.Request) graphql.Marshaler {
-	return ec._Request(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNRequest2ᚕᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐRequestᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Request) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -7760,6 +8458,20 @@ func (ec *executionContext) marshalNRequest2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋg
 		return graphql.Null
 	}
 	return ec._Request(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNRequestOutput2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐRequestOutput(ctx context.Context, sel ast.SelectionSet, v model.RequestOutput) graphql.Marshaler {
+	return ec._RequestOutput(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNRequestOutput2ᚖgithubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐRequestOutput(ctx context.Context, sel ast.SelectionSet, v *model.RequestOutput) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._RequestOutput(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNRoom2githubᚗcomᚋPwrFrᚋgqlgenᚋgraphᚋmodelᚐRoom(ctx context.Context, sel ast.SelectionSet, v model.Room) graphql.Marshaler {

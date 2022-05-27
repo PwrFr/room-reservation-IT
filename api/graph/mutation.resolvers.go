@@ -19,7 +19,7 @@ func (r *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateRequest(ctx context.Context, input model.NewRequest) (*model.Request, error) {
+func (r *mutationResolver) CreateRequest(ctx context.Context, input model.NewRequest) (*model.RequestOutput, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

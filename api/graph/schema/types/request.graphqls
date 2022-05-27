@@ -1,19 +1,17 @@
-# type Request {
-#   request_id: Int!
-#   room_id: Int!
-#   request_purpose: String!
-#   request_attendee: Int!
-#   request_status: String!
-#   start_datetime: String!
-#   end_datetime: String!
-#   request_by: String!
-#   request_datetime: String!
-#   approve_by: String
-#   approve_datetime: String
-#   remark: String!
-#   room: Room!
-#   student: Student!
-# }
+type RequestOutput {
+  request_id: Int!
+  room_id: Int!
+  request_purpose: String!
+  request_attendee: Int!
+  request_status: String!
+  start_datetime: String!
+  end_datetime: String!
+  request_by: String!
+  request_datetime: String!
+  approve_by: String
+  approve_datetime: String
+  remark: String!
+}
 
 type Request {
   request_id: Int!

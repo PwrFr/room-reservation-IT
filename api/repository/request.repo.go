@@ -6,7 +6,7 @@ import (
 	"github.com/PwrFr/gqlgen/graph/model"
 )
 
-func (r *RepoDB) InsertRequest(request *model.Request) (*model.Request, error) {
+func (r *RepoDB) InsertRequest(request *model.RequestOutput) (*model.RequestOutput, error) {
 	_, err := r.DB.Model(request).Returning("*").Insert()
 	if err != nil {
 		fmt.Println("err", err)

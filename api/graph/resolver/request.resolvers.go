@@ -7,8 +7,8 @@ import (
 	"github.com/PwrFr/gqlgen/graph/model"
 )
 
-func (m *mutationResolver) CreateRequest(ctx context.Context, input model.NewRequest) (*model.Request, error) {
-	new_req := &model.Request{
+func (m *mutationResolver) CreateRequest(ctx context.Context, input model.NewRequest) (*model.RequestOutput, error) {
+	new_req := &model.RequestOutput{
 		RoomID:          input.RoomID,
 		RequestPurpose:  input.RequestPurpose,
 		RequestAttendee: input.RequestAttendee,
