@@ -8,7 +8,9 @@ import (
 	"github.com/PwrFr/gqlgen/graph/resolver/middleware"
 )
 
+
 func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*model.AccountWithToken, error) {
+
 	new_acc := &model.Account{
 		AccountID: input.AccountID,
 		FirstName: input.FirstName,
@@ -16,6 +18,7 @@ func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 		Email:     input.Email,
 		Role:      "guest",
 	}
+
 
 	acc, _ := m.RepoDB.GetAccountById(input.AccountID)
 
@@ -32,6 +35,8 @@ func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 
 		return acc_token, nil
 
+
+
 	}
 
 	isStudent := new_acc.Email[9:] == "it.kmitl.ac.th"
@@ -43,7 +48,11 @@ func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 		return nil, err
 	}
 
+
 	if isStudent {
+
+	
+
 		_, err := m.RepoDB.InsertStudent(new_acc.AccountID, new_acc.Email)
 		if err != nil {
 			fmt.Println("std_err")
