@@ -16,6 +16,18 @@ type Room struct {
 	RoomType     *RoomType       `pg:"rel:has-one"`
 	RoomFacility []*RoomFacility `pg:"rel:has-many"`
 }
+type RoomWithRequest struct {
+	tableName    struct{}         `pg:"room"`
+	RoomID       int              `json:"room_id" pg:"room_id,pk"`
+	RoomName     string           `json:"room_name"`
+	RoomStatus   string           `json:"room_status"`
+	RoomCapacity int              `json:"room_capacity"`
+	TypeID       int              `json:"type_id" pg:"type_id"`
+	RoomType     *RoomType        `pg:"rel:has-one"`
+	RoomFacility []*RoomFacility  `pg:"rel:has-many"`
+	Request      []*RequestOutput `pg:"rel:has-many"`
+}
+
 type RoomType struct {
 	tableName struct{} `pg:"room_type"`
 	TypeID    int      `json:"type_id" pg:"type_id,pk"`
