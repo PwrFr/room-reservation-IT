@@ -86,6 +86,7 @@ type ComplexityRoot struct {
 		Account        func(childComplexity int) int
 		AccountByID    func(childComplexity int, accountID string) int
 		AccountStudent func(childComplexity int, accountID string) int
+		Ipwat          func(childComplexity int) int
 		Request        func(childComplexity int) int
 		RequestByID    func(childComplexity int, accountID string) int
 		Rooms          func(childComplexity int) int
@@ -174,6 +175,7 @@ type QueryResolver interface {
 	AccountStudent(ctx context.Context, accountID string) (*model.AccountStudent, error)
 	Request(ctx context.Context) ([]*model.Request, error)
 	RequestByID(ctx context.Context, accountID string) ([]*model.Request, error)
+	Ipwat(ctx context.Context) (*string, error)
 }
 
 type executableSchema struct {
@@ -407,6 +409,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.AccountStudent(childComplexity, args["account_id"].(string)), true
+
+	case "Query.ipwat":
+		if e.complexity.Query.Ipwat == nil {
+			break
+		}
+
+		return e.complexity.Query.Ipwat(childComplexity), true
 
 	case "Query.request":
 		if e.complexity.Query.Request == nil {
@@ -871,7 +880,7 @@ var sources = []*ast.Source{
   accountStudent(account_id: String!): AccountStudent!
   request: [Request!]!
   requestById(account_id: String!): [Request!]!
- 
+  ipwat: String
 }`, BuiltIn: false},
 	{Name: "graph/schema/schema.graphqls", Input: `# GraphQL schema example
 #
@@ -2758,6 +2767,47 @@ func (ec *executionContext) fieldContext_Query_requestById(ctx context.Context, 
 	if fc.Args, err = ec.field_Query_requestById_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_ipwat(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_ipwat(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Ipwat(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_ipwat(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
 	}
 	return fc, nil
 }
@@ -7481,6 +7531,26 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "ipwat":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ipwat(ctx, field)
 				return res
 			}
 

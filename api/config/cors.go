@@ -18,6 +18,8 @@ func CorsConfig() func(http.Handler) http.Handler {
 	fmt.Println("fe.host: ", host)
 	return (cors.New(cors.Options{
 		AllowedOrigins:   []string{host},
+		AllowedMethods:   []string{"GET, POST, PUT, DELETE"},
+		AllowedHeaders:   []string{"Origin, Content-Type, Accept, Authorization"},
 		AllowCredentials: true,
 		Debug:            true,
 	}).Handler)
