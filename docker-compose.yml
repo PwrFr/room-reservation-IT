@@ -1,5 +1,5 @@
 services:
-    app:
+    web:
         build: ./api
         container_name: go_container
         ports:
