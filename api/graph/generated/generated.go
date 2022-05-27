@@ -947,7 +947,7 @@ type Request {
   request_datetime: String!
   approve_by: String
   approve_datetime: String
-  remark: String!
+  remark: String
   student_id: String
 	year: String
   first_name: String
@@ -3440,14 +3440,11 @@ func (ec *executionContext) _Request_remark(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Request_remark(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7669,9 +7666,6 @@ func (ec *executionContext) _Request(ctx context.Context, sel ast.SelectionSet, 
 
 			out.Values[i] = ec._Request_remark(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "student_id":
 
 			out.Values[i] = ec._Request_student_id(ctx, field, obj)

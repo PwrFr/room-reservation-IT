@@ -65,12 +65,10 @@ func (r *RepoDB) GetRequestById(input string) ([]*model.Request, error) {
 	var request []*model.Request
 	stm := `
 	SELECT req.*, 
-	IF a.firstname != "" then a.first_name end if , 
-
-
+	a.first_name, a.last_name, a.email,
 	r.room_name, r.room_status, r.room_capacity  
 	FROM request AS req 
-	 join account AS a on req.approve_by = a.account_id 
+	left join account AS a on req.approve_by = a.account_id 
 	join room AS r on r.room_id = req.room_id 
 	WHERE req.request_by = ?
 	ORDER BY req.request_id
