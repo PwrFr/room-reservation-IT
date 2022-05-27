@@ -47,7 +47,15 @@
 <script>
 import gql from "graphql-tag";
 import StatusCardVue from "../../components/StatusCard.vue";
-
+const REQ_ROOMS = gql`
+  query request {
+    request {
+      request_id
+      room_id
+      request_by
+    }
+  }
+`;
 const REQ_ROOMS_BY_ID = gql`
   query requestById($id: String!) {
     requestById(account_id: $id) {
@@ -66,12 +74,9 @@ export default {
     StatusCardVue,
   },
   apollo: {
-    // requestById: {
-    //   query: REQ_ROOMS_BY_ID,
-    //   variables: {
-    //     id: this.$auth.user.sub,
-    //   },
-    // },
+    requested: {
+      query: REQ_ROOMS,
+    },
   },
   data: () => ({
     text: "all",

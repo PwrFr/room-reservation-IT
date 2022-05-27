@@ -186,9 +186,9 @@ export default {
     allRoom: [],
   }),
   apollo: {
-    // rooms: {
-    //   query: ALL_ROOMS,
-    // },
+    rooms: {
+      query: ALL_ROOMS,
+    },
   },
   methods: {
     selected(room) {
