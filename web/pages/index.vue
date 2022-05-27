@@ -186,7 +186,7 @@ export default {
     allRoom: [],
   }),
   apollo: {
-    rooms: {
+    rasds: {
       query: ALL_ROOMS,
     },
   },
