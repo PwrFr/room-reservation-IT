@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -14,9 +15,9 @@ func CorsConfig() func(http.Handler) http.Handler {
 	if host == "" {
 		host = local
 	}
-
+	fmt.Println("fe.host: ", host)
 	return (cors.New(cors.Options{
-		AllowedOrigins:   []string{host},
+		AllowedOrigins:   []string{"host"},
 		AllowCredentials: true,
 		Debug:            true,
 	}).Handler)
