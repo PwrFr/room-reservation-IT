@@ -51,7 +51,8 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: "http://localhost:3001/query",
+        // httpEndpoint: "http://localhost:3001/query",
+        httpEndpoint: "https://room-it-kub.herokuapp.com/query",
       },
     },
     defaultOptions: {
