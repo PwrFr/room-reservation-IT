@@ -1,6 +1,6 @@
 <template>
   <v-app class="my-4 mx-4 rounded-3xl">
-    <v-container v-if="$auth.loggedIn">
+    <v-container v-if="$auth.user">
       <v-col cols="12" class="py-10">
         <v-btn-toggle v-model="text" mandatory group>
           <v-btn value="all">

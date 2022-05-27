@@ -1,9 +1,7 @@
 <template>
   <v-app class="my-4 mx-4 rounded-3xl">
     <div
-      v-if="
-        $auth.loggedIn && $auth.$storage.getLocalStorage('role') === 'staff'
-      "
+      v-if="$auth.user && $auth.$storage.getLocalStorage('role') === 'staff'"
     >
       <v-container>
         <v-col cols="12" class="py-10">
