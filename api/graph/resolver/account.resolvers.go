@@ -8,19 +8,25 @@ import (
 )
 
 func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*model.Account, error) {
+	acc, _ := m.RepoDB.GetAccountById(input.AccountID)
+
+	if acc != nil {
+		return acc, nil
+
+	}
+
+	//if account(topper) is null will create new account
 	new_acc := &model.Account{
 		AccountID: input.AccountID,
 		FirstName: input.FirstName,
 		LastName:  input.LastName,
 		Email:     input.Email,
-		Role:      "student",
+		Role:      "guest",
 	}
 
-	acc, _ := m.RepoDB.GetAccountById(input.AccountID)
-	//if account is null will create new account
-	if acc != nil {
-		return acc, nil
-
+	is_student := new_acc.Email[9:] == "it.kmitl.ac.th"
+	if is_student {
+		new_acc.Role = "student"
 	}
 
 	_, err := m.RepoDB.InsertAccount(new_acc)
@@ -28,7 +34,7 @@ func (m *mutationResolver) CreateAccount(ctx context.Context, input model.NewAcc
 		return nil, err
 	}
 
-	if new_acc.Email[9:] == "it.kmitl.ac.th" {
+	if is_student {
 		_, err := m.RepoDB.InsertStudent(new_acc.AccountID, new_acc.Email)
 		if err != nil {
 			fmt.Println("std_err")
