@@ -1,7 +1,9 @@
 <template>
   <v-app class="my-4 mx-4 rounded-3xl">
     <div
-      v-if="$auth.user && $auth.$storage.getLocalStorage('role') === 'staff'"
+      v-if="
+        $auth.loggedIn && $auth.$storage.getLocalStorage('role') === 'staff'
+      "
     >
       <v-container>
         <v-col cols="12" class="py-10">
@@ -58,7 +60,13 @@
         </v-dialog>
       </v-card-actions>
     </div>
-    <v-row v-else justify="center" align="center">
+    <v-row
+      v-if="
+        !$auth.loggedIn && $auth.$storage.getLocalStorage('role') !== 'staff'
+      "
+      justify="center"
+      align="center"
+    >
       <h1 style="font-size: 5rem">You're not Staff</h1>
     </v-row>
   </v-app>

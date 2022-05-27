@@ -1,6 +1,6 @@
 <template>
   <v-app class="my-4 mx-4 rounded-3xl">
-    <v-container v-if="$auth.user">
+    <v-container v-if="$auth.loggedIn">
       <v-col cols="12" class="py-10">
         <v-btn-toggle v-model="text" mandatory group>
           <v-btn value="all">
@@ -29,10 +29,7 @@
         ></v-col>
       </v-row>
 
-      <v-row
-        v-if="!$apolloData.loading"
-        style="height: 70vh; overflow-y: scroll"
-      >
+      <v-row v-else style="height: 70vh; overflow-y: scroll">
         <div style="display: none">
           {{ request }}
         </div>
@@ -41,7 +38,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-row v-else justify="center" align="center">
+    <v-row v-if="!$auth.loggedIn" justify="center" align="center">
       <h1 style="font-size: 5rem">Please LogIn</h1>
     </v-row>
   </v-app>
