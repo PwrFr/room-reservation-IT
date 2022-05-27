@@ -17,7 +17,7 @@ func CorsConfig() func(http.Handler) http.Handler {
 	}
 	fmt.Println("fe.host: ", host)
 	return (cors.New(cors.Options{
-		AllowedOrigins:   []string{"host"},
+		AllowedOrigins:   []string{host},
 		AllowCredentials: true,
 		Debug:            true,
 	}).Handler)
