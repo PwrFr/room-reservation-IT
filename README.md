@@ -1,7 +1,7 @@
 # room-reservation-IT
 
 ## Demo
-Use this email to Demo project
+Use this email to Demo project on : https://statuesque-queijadas-fa6f75.netlify.app/
 ```
 Student : 
 gmail: student.it00@gmail.com
@@ -41,7 +41,6 @@ go run server.go
 ## Technology
 - NuxtJS
 - Vite
-- Tailwind
 - Vuetify
 
 ## Color Palette
