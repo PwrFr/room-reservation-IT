@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/PwrFr/gqlgen/graph/model"
@@ -26,6 +27,7 @@ func (r *RepoDB) GetRequest() ([]*model.Request, error) {
 	join student AS s on req.request_by = s.account_id 
 	join account AS a on s.account_id = a.account_id 
 	join room AS r on r.room_id = req.room_id 
+	ORDER BY req.request_id
 `
 
 	_, err := r.DB.Query(&request, stm)
@@ -63,19 +65,23 @@ func (r *RepoDB) GetRequestById(input string) ([]*model.Request, error) {
 	var request []*model.Request
 	stm := `
 	SELECT req.*, 
-	a.first_name,  a.last_name, a.email, 
+	IF a.firstname != "" then a.first_name end if , 
+
+
 	r.room_name, r.room_status, r.room_capacity  
 	FROM request AS req 
-	join account AS a on req.approve_by = a.account_id 
+	left join account AS a on req.approve_by = a.account_id 
 	join room AS r on r.room_id = req.room_id 
-	WHERE req.request_by = ?`
+	WHERE req.request_by = ?
+	ORDER BY req.request_id
+	`
 
 	_, err := r.DB.Query(&request, stm, input)
 	if err != nil {
 		return nil, err
 	}
-	// x, _ := json.Marshal(request)
-	// fmt.Println(string(x))
+	x, _ := json.Marshal(request)
+	fmt.Println(string(x))
 	return request, nil
 }
 
