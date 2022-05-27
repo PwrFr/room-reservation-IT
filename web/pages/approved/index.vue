@@ -146,7 +146,7 @@ export default {
             },
           })
           .then((res) => console.log(res))
-          .finally(() => this.$router.go("/"));
+          .finally(() => this.$router.replace({ path: "/" }));
         // console.log(update);
         this.dialog = !this.dialog;
       } else {

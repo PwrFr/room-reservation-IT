@@ -78,7 +78,7 @@ export default {
             },
           })
           .then((res) => console.log(res))
-          .finally(() => this.$router.go("/"));
+          .finally(() => this.$router.replace({ path: "/" }));
       }
     },
   },
