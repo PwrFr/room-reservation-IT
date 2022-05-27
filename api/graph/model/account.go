@@ -9,6 +9,16 @@ type Account struct {
 	Email     string   `json:"email"`
 }
 
+type AccountWithToken struct {
+	tableName struct{} `pg:"account"`
+	AccountID string   `json:"account_id"`
+	FirstName string   `json:"first_name"`
+	LastName  string   `json:"last_name"`
+	Role      string   `json:"role"`
+	Email     string   `json:"email"`
+	Token     *string  `json:"token"`
+}
+
 type AccountStudent struct {
 	tableName struct{}   `pg:"account"`
 	AccountID string     `json:"account_id" pg:"account_id,pk"`

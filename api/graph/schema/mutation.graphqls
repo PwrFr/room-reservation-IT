@@ -1,8 +1,8 @@
 type Mutation {
   createRoom(input: NewRoom!): Room!
-  createAccount(input: NewAccount!): Account!
-  createRequest(input: NewRequest!): RequestOutput!
-  updateRequest(input: Approve!): ApproveOutput!
-  removeRequest(request_id: Int!): String
-  updateRoom(room_id: Int!, status: String!): String
+  createAccount(input: NewAccount!): AccountWithToken!
+  createRequest(input: NewRequest!, token: String): RequestOutput!
+  updateRequest(input: Approve!, token: String): ApproveOutput!
+  removeRequest(request_id: Int!, token: String): String
+  updateRoom(room_id: Int!, status: String!, token: String): String
 }
