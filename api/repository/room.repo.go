@@ -26,6 +26,25 @@ func (r *RepoDB) GetRoom() ([]*model.Room, error) {
 	return room, nil
 }
 
+func (r *RepoDB) GetRoomWithRequest() ([]*model.RoomWithRequest, error) {
+	var room []*model.RoomWithRequest
+
+	err := r.DB.Model(&room).
+		Relation("RoomType").
+		Relation("RoomFacility").
+		Relation("RoomFacility.Facility").
+		Relation("Request").
+		// WherePK().
+		// Where("room_id = 1").
+		Select()
+	if err != nil {
+		fmt.Println("Err, ", err)
+		return nil, err
+	}
+
+	return room, nil
+}
+
 func (r *RepoDB) InsertRoom(room *model.Room) (*model.Room, error) {
 	_, err := r.DB.Model(room).Returning("*").Insert()
 	if err != nil {
