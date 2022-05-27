@@ -1,3 +1,20 @@
+# type Request {
+#   request_id: Int!
+#   room_id: Int!
+#   request_purpose: String!
+#   request_attendee: Int!
+#   request_status: String!
+#   start_datetime: String!
+#   end_datetime: String!
+#   request_by: String!
+#   request_datetime: String!
+#   approve_by: String
+#   approve_datetime: String
+#   remark: String!
+#   room: Room!
+#   student: Student!
+# }
+
 type Request {
   request_id: Int!
   room_id: Int!
@@ -11,7 +28,15 @@ type Request {
   approve_by: String
   approve_datetime: String
   remark: String!
-  room: Room!
+  student_id: String
+	year: String
+  first_name: String
+	last_name: String
+	email: String
+	room_name: String
+	room_status: String
+  room_capacity: Int
+  
 }
 
 input NewRequest {

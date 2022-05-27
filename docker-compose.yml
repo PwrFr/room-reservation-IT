@@ -1,0 +1,8 @@
+services:
+    app:
+        build: ./api
+        container_name: go_container
+        ports:
+            - 3001:3001
+        environment:
+            PORT: 3001

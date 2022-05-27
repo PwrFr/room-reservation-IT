@@ -10,7 +10,7 @@ type Room struct {
 	tableName    struct{}        `pg:"room"`
 	RoomID       int             `json:"room_id" pg:"room_id,pk"`
 	RoomName     string          `json:"room_name"`
-	RoomStatus   string          `json:"roomstatus"`
+	RoomStatus   string          `json:"room_status"`
 	RoomCapacity int             `json:"room_capacity"`
 	TypeID       int             `json:"type_id" pg:"type_id"`
 	RoomType     *RoomType       `pg:"rel:has-one"`

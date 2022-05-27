@@ -16,7 +16,7 @@ type AccountStudent struct {
 	LastName  string     `json:"last_name"`
 	Role      string     `json:"role"`
 	Email     string     `json:"email"`
-	Student   []*Student `pg:"rel:has-one"`
+	Student   []*Student `pg:"rel:has-many"`
 }
 
 type NewAccount struct {
@@ -28,8 +28,8 @@ type NewAccount struct {
 
 type Student struct {
 	tableName struct{} `pg:"student"`
-	AccountID string   `json:"account_id" pg:"account_id,join_fk:fk_account_student"`
-	StudentID string   `json:"student_id"`
+	AccountID string   `json:"account_id" pg:"account_id"`
+	StudentID string   `json:"student_id" pg:"student_id"`
 	ProgramID int      `json:"program_id"`
 	Phone     string   `json:"phone"`
 	Year      string   `json:"year"`

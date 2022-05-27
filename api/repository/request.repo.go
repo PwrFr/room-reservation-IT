@@ -18,7 +18,17 @@ func (r *RepoDB) InsertRequest(request *model.Request) (*model.Request, error) {
 
 func (r *RepoDB) GetRequest() ([]*model.Request, error) {
 	var request []*model.Request
-	err := r.DB.Model(&request).Relation("Room").Select()
+	stm := `
+	SELECT req.*, s.student_id, s.year, 
+	a.first_name,  a.last_name, a.email, 
+	r.room_name, r.room_status, r.room_capacity 
+	FROM request AS req 
+	join student AS s on req.request_by = s.account_id 
+	join account AS a on s.account_id = a.account_id 
+	join room AS r on r.room_id = req.room_id 
+`
+
+	_, err := r.DB.Query(&request, stm)
 	if err != nil {
 		return nil, err
 	}
@@ -27,13 +37,45 @@ func (r *RepoDB) GetRequest() ([]*model.Request, error) {
 	return request, nil
 }
 
+// func (r *RepoDB) GetRequest() ([]*model.Request, error) {
+// 	var request []*model.Request
+// 	err := r.DB.Model(&request).Relation("Room").Relation("student").Select()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	// x, _ := json.Marshal(request)
+// 	// fmt.Println(string(x))
+// 	return request, nil
+// }
+
+// func (r *RepoDB) GetRequestById(input string) ([]*model.Request, error) {
+// 	var request []*model.Request
+// 	err := r.DB.Model(&request).Relation("Room").Where("request_by = ?", input).Select()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return request, nil
+// }
+
+//for student will show account as staff
 func (r *RepoDB) GetRequestById(input string) ([]*model.Request, error) {
 	var request []*model.Request
-	err := r.DB.Model(&request).Relation("Room").Where("request_by = ?", input).Select()
+	stm := `
+	SELECT req.*, 
+	a.first_name,  a.last_name, a.email, 
+	r.room_name, r.room_status, r.room_capacity  
+	FROM request AS req 
+	join account AS a on req.approve_by = a.account_id 
+	join room AS r on r.room_id = req.room_id 
+	WHERE req.request_by = ?`
+
+	_, err := r.DB.Query(&request, stm, input)
 	if err != nil {
 		return nil, err
 	}
-
+	// x, _ := json.Marshal(request)
+	// fmt.Println(string(x))
 	return request, nil
 }
 
