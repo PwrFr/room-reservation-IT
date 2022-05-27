@@ -4,4 +4,5 @@ type Mutation {
   createRequest(input: NewRequest!): RequestOutput!
   updateRequest(input: Approve!): ApproveOutput!
   removeRequest(request_id: Int!): String
+  updateRoom(room_id: Int!, status: String!): String
 }

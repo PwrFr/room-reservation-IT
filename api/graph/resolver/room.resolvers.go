@@ -21,7 +21,7 @@ func (r *queryResolver) Rooms(ctx context.Context) ([]*model.Room, error) {
 	return r.RepoDB.GetRoom()
 }
 
-func (r *queryResolver) UpdateRoom(ctx context.Context, room_id int, status string) (*string, error) {
-	err := r.RepoDB.UpdateRoom(room_id, status)
+func (m *mutationResolver) UpdateRoom(ctx context.Context, room_id int, status string) (*string, error) {
+	err := m.RepoDB.UpdateRoom(room_id, status)
 	return nil, err
 }

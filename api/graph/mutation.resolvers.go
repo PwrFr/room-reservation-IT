@@ -31,6 +31,10 @@ func (r *mutationResolver) RemoveRequest(ctx context.Context, requestID int) (*s
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *mutationResolver) UpdateRoom(ctx context.Context, roomID int, status string) (*string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
