@@ -48,7 +48,7 @@
                   <v-list-item three-line style="align-items: flex-start">
                     <v-list-item-content>
                       <v-list-item-title class="mb-1" style="font-size: 1.5rem">
-                        {{ item.room_name }} : {{ item.room_id }}
+                        {{ item.room_name }}
                       </v-list-item-title>
                       <v-list-item-subtitle v-if="item.request">
                         Start :
@@ -222,14 +222,16 @@ export default {
   methods: {
     async update(id) {
       if (confirm("Are you sure?")) {
-        await this.$apollo.mutate({
-          mutation: UPDATE_ROOM,
-          variables: {
-            id: id,
-            status: this.status,
-            token: this.$auth.$storage.getLocalStorage("token"),
-          },
-        }).finally(() => this.$router.replace({ path: "/" }));
+        await this.$apollo
+          .mutate({
+            mutation: UPDATE_ROOM,
+            variables: {
+              id: id,
+              status: this.status,
+              token: this.$auth.$storage.getLocalStorage("token"),
+            },
+          })
+          .finally(() => this.$router.replace({ path: "/" }));
         this.mini = true;
       }
     },
