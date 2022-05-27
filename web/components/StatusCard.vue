@@ -61,8 +61,8 @@
 import gql from "graphql-tag";
 
 const REMOOVE_REQ = gql`
-  mutation removeRequest($id: Int!) {
-    removeRequest(request_id: $id)
+  mutation removeRequest($id: Int!, $token: String!) {
+    removeRequest(request_id: $id, token: $token)
   }
 `;
 export default {
@@ -75,6 +75,7 @@ export default {
             mutation: REMOOVE_REQ,
             variables: {
               id: req,
+              token: this.$auth.$storage.getLocalStorage("token"),
             },
           })
           .then((res) => console.log(res))

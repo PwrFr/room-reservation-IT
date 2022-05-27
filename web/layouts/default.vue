@@ -7,7 +7,11 @@
             <v-list-item style="padding-left: 0.5rem">
               <v-list-item-avatar>
                 <v-avatar>
-                  <img v-auth-image="$auth.user.picture" />
+                  <img
+                    height="500"
+                    width="500"
+                    v-auth-image="$auth.user.picture"
+                  />
                 </v-avatar>
               </v-list-item-avatar>
             </v-list-item>
@@ -110,6 +114,28 @@
             </v-list-item>
 
             <v-list-item
+              v-if="role === 'staff'"
+              target=".v-list-item"
+              to="/manage"
+              router
+              exact
+              style="padding-left: 0.4rem"
+            >
+              <v-list-item-content>
+                <v-list-item-title>
+                  <lord-icon
+                    target=".v-list-item"
+                    src="https://cdn.lordicon.com/huwchbks.json"
+                    trigger="morph"
+                    style="width: 2.5rem; height: 2.5rem"
+                  >
+                  </lord-icon>
+                  จัดการห้อง</v-list-item-title
+                >
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
               v-if="$auth.loggedIn"
               @click="logout"
               exact
@@ -182,6 +208,7 @@ const GET_ROLE = gql`
       last_name
       role
       email
+      token
     }
   }
 `;
@@ -195,6 +222,7 @@ export default {
     logout() {
       this.$auth.logout();
       this.$auth.$storage.removeLocalStorage("role");
+      this.$auth.$storage.removeLocalStorage("token");
       this.$router.go();
     },
   },
@@ -211,6 +239,11 @@ export default {
         },
       });
       this.$auth.$storage.setLocalStorage("role", role.data.createAccount.role);
+      this.$auth.$storage.setLocalStorage(
+        "token",
+        role.data.createAccount.token
+      );
+
       this.role = role.data.createAccount.role;
       // return this.$auth.user.name;
     },

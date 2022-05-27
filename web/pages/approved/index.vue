@@ -99,6 +99,7 @@ const UPD_REQ = gql`
     $reqId: Int!
     $status: String!
     $room: Int!
+    $token: String!
   ) {
     updateRequest(
       input: {
@@ -107,6 +108,7 @@ const UPD_REQ = gql`
         request_status: $status
         room_id: $room
       }
+      token: $token
     ) {
       request_id
       request_status
@@ -143,6 +145,7 @@ export default {
               reqId: parseInt(req),
               status: msg,
               room: parseInt(room),
+              token: this.$auth.$storage.getLocalStorage("token"),
             },
           })
           .then((res) => console.log(res))

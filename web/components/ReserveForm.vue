@@ -37,51 +37,52 @@
         {{ select.room_status }}
       </v-chip>
     </v-list-item>
-
-    <v-form class="mx-5" v-model="valid" ref="form">
-      <v-textarea
-        label="Purpose"
-        v-model="purpose"
-        :rules="Rules"
-        rows="3"
-        row-height="20"
-      ></v-textarea>
-      <v-menu
-        ref="menu2"
-        v-model="menu2"
-        :close-on-content-click="false"
-        :return-value.sync="dates2"
-        transition="scale-transition"
-        offset-y
-        :nudge-left="100"
-        min-width="auto"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-text-field
-            label="Date"
-            v-model="dateRangeText2"
-            readonly
-            :rules="Rules"
-            v-bind="attrs"
-            v-on="on"
-          ></v-text-field>
-        </template>
-        <v-date-picker v-model="dates2" range no-title scrollable>
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="menu2 = false"> Cancel </v-btn>
-          <v-btn text color="primary" @click="$refs.menu2.save(dates2)">
-            OK
-          </v-btn>
-        </v-date-picker>
-      </v-menu>
-      <v-text-field
-        label="Attendance"
-        v-model="attendance"
-        type="number"
-        :rules="Rules"
-        required
-      ></v-text-field>
-    </v-form>
+    <v-list-item>
+      <v-form class="mx-5" v-model="valid" ref="form">
+        <v-textarea
+          label="Purpose"
+          v-model="purpose"
+          :rules="Rules"
+          rows="3"
+          row-height="20"
+        ></v-textarea>
+        <v-menu
+          ref="menu2"
+          v-model="menu2"
+          :close-on-content-click="false"
+          :return-value.sync="dates2"
+          transition="scale-transition"
+          offset-y
+          :nudge-left="100"
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              label="Date"
+              v-model="dateRangeText2"
+              readonly
+              :rules="Rules"
+              v-bind="attrs"
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="dates2" range no-title scrollable>
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="menu2 = false"> Cancel </v-btn>
+            <v-btn text color="primary" @click="$refs.menu2.save(dates2)">
+              OK
+            </v-btn>
+          </v-date-picker>
+        </v-menu>
+        <v-text-field
+          label="Attendance"
+          v-model="attendance"
+          type="number"
+          :rules="Rules"
+          required
+        ></v-text-field>
+      </v-form>
+    </v-list-item>
 
     <v-card-actions style="justify-content: space-evenly">
       <v-btn
@@ -119,7 +120,10 @@ export default {
   },
   methods: {
     validate(purpose, dates2, attendance) {
-      if (this.$auth.loggedIn) {
+      if (
+        this.$auth.loggedIn &&
+        this.$auth.$storage.getLocalStorage("role") == "student"
+      ) {
         this.$refs.form.validate();
         if (this.valid) {
           this.check(purpose, dates2, attendance);

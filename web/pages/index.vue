@@ -17,7 +17,7 @@
                   </v-btn>
 
                   <v-btn value="Not available" color="error" text>
-                    <span class="hidden-sm-and-down">Unavailable</span>
+                    <span class="hidden-sm-and-down">Not available</span>
                   </v-btn>
                   <v-btn value="Maintenance" color="primary" text>
                     <span class="hidden-sm-and-down">maintenance</span>
@@ -139,6 +139,7 @@ const RESERVATION = gql`
     $sDate: String!
     $eDate: String!
     $user: String!
+    $token: String!
   ) {
     createRequest(
       input: {
@@ -149,6 +150,7 @@ const RESERVATION = gql`
         end_datetime: $eDate
         request_by: $user
       }
+      token: $token
     ) {
       request_id
       room_id
@@ -209,6 +211,7 @@ export default {
               sDate: d[0],
               eDate: d.length == 2 ? d[1] : d[0],
               user: this.$auth.user.sub,
+              token: this.$auth.$storage.getLocalStorage("token"),
             },
           })
           .then((res) => console.log(res));
@@ -241,17 +244,6 @@ export default {
     // },
   },
   computed: {
-    // async rooms() {
-    //   // console.log(this.$auth.user.sub);
-
-    //   const res = await this.$apollo.query({
-    //     query: ALL_ROOMS,
-    //   });
-    //   this.allRoom = res.data.rooms;
-    //   // console.log(this.items);
-
-    //   return res.data.rooms;
-    // },
     detail() {
       return {
         room: this.select.room_name,
