@@ -6,4 +6,4 @@ services:
             - 3001:3001
         environment:
             PORT: 3001
-            FRONTEND_HOST: http://localhost:3000
+            FRONTEND_HOST: https://statuesque-queijadas-fa6f75.netlify.app/
