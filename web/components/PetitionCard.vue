@@ -1,7 +1,7 @@
 <template>
   <v-card style="font-family: kanit" v-if="staff">
     <v-card-title style="font-size: 2rem">
-      {{ index }}Petition For room {{ room.room.room_name }}
+      Petition For room {{ room.room_name }}
     </v-card-title>
 
     <v-card-text>
@@ -24,7 +24,7 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-card-text v-if="$auth.loggedIn"
-        >Request By {{ room.request_by }}</v-card-text
+        >Request By {{ room.email }}</v-card-text
       >
       <v-btn
         color="error"

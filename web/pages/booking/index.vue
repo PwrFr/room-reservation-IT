@@ -52,10 +52,7 @@ const REQ_ROOMS_BY_ID = gql`
   query requestById($id: String!) {
     requestById(account_id: $id) {
       request_id
-      room {
-        room_id
-        room_name
-      }
+      room_name
       request_purpose
       request_attendee
       request_status
@@ -91,7 +88,7 @@ export default {
       });
     },
     async request() {
-      console.log(this.$auth.user.sub);
+      // console.log(this.$auth.user.sub);
 
       const res = await this.$apollo.query({
         query: REQ_ROOMS_BY_ID,
@@ -100,7 +97,7 @@ export default {
         },
       });
       this.items = res.data.requestById;
-      console.log(this.items);
+      // console.log(this.items);
 
       return res.data.requestById;
     },

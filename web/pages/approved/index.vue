@@ -75,15 +75,14 @@ const REQ_ROOMS = gql`
     request {
       request_id
       room_id
-      room {
-        room_name
-      }
+      room_name
       request_purpose
       request_attendee
       request_status
       start_datetime
       end_datetime
       request_by
+      email
     }
   }
 `;
