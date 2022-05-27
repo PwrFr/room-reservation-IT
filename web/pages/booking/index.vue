@@ -74,7 +74,7 @@ export default {
     // },
   },
   data: () => ({
-    text: "pending",
+    text: "all",
     items: [],
   }),
   computed: {

@@ -119,7 +119,7 @@ export default {
     },
   },
   data: () => ({
-    text: "pending",
+    text: "all",
     select: {},
     mini: true,
     dialog: false,
